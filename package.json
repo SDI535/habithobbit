@@ -1,6 +1,5 @@
 {
   "name": "habithobbit",
-
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
@@ -20,6 +19,7 @@
     "expo-secure-store": "~11.3.0",
     "expo-splash-screen": "~0.16.1",
     "expo-status-bar": "~1.4.0",
+    "luxon": "^3.0.3",
     "react": "18.0.0",
     "react-dom": "18.0.0",
     "react-native": "0.69.4",
