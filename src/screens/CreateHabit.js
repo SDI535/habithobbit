@@ -6,6 +6,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
+  ScrollView,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import axiosConn from "../api/config";
@@ -14,9 +15,9 @@ import Button from "../components/loginButton";
 import { styles } from "../styles/styles";
 import BackButton from "../components/loginBackButton";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { DateTime, Interval } from "luxon";
 import { habitValidator } from "../helpers/habitValidator";
 import { Switch } from "react-native-paper";
+import moment from "moment";
 
 const CreateHabit = ({ navigation }) => {
   const [habitData, setHabitData] = useState({
@@ -47,7 +48,7 @@ const CreateHabit = ({ navigation }) => {
     { label: "Weekly", value: "weekly" },
   ]);
   const [openDay, setOpenDay] = useState(false);
-  const [dayValue, setDayValue] = useState([DateTime.now().weekday]);
+  const [dayValue, setDayValue] = useState([moment().isoWeekday()]);
   const [day, setDay] = useState([
     { label: "Monday", value: 1 },
     { label: "Tuesday", value: 2 },
@@ -59,10 +60,9 @@ const CreateHabit = ({ navigation }) => {
   ]);
 
   //Datetime picker
-  const [endDate, setEndDate] = useState(DateTime.now().toJSDate());
-  const prettyDate = DateTime.fromJSDate(endDate).toLocaleString(
-    DateTime.DATE_FULL
-  );
+  // const [endDate, setEndDate] = useState(DateTime.now().toJSDate());
+  const [endDate, setEndDate] = useState(moment().toDate());
+  const prettyDate = moment(endDate).format("DD MMMM YYYY");
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
 
@@ -75,43 +75,40 @@ const CreateHabit = ({ navigation }) => {
       setEndDate(new Date(0));
     } else {
       setEndDate(currentDate);
-      //get number of days between both dates
     }
   };
 
   const calculateTargetCount = () => {
     let totalCount = 0;
-    // console.log("Start totalCount", totalCount);
-    let start = DateTime.now();
-    let end = DateTime.fromJSDate(endDate);
-    let i = Interval.fromDateTimes(start, end);
+
+    let start = moment();
+    let end = moment(endDate);
 
     // if freq = daily, totalCount = daysInterval (minus day it was created)
     // if freq = weekly, and startday = wed, selection is every  thurs, sat, tuesday, wednesday - starts this week (thurs, sat) and thereafter (wednesday, tues, thurs, sat)
     // totalCount = weeks (including this week) x count of days - (1st occurrance of days that is before startday) - (last occurance of days that is after end date)
     if (freqValue === "daily") {
-      let daysInterval = i.count("days");
-      // console.log("daysInterval", daysInterval);
-      totalCount = daysInterval - 1;
+      let daysInterval = end.diff(start, "days", true);
+
+      totalCount = Math.round(daysInterval);
     } else {
-      let weeksInterval = i.count("weeks");
-      // console.log("weeksInterval", weeksInterval);
+      let diffinWeeks = end.diff(start, "weeks", true);
+
       // get count of selected days per week
       let countPerWeek = dayValue.length;
-      // console.log("countPerweek", countPerWeek);
-      const startDay = start.weekday;
-      const endDay = end.weekday;
-      // console.log("startDay", startDay);
+
+      const startDay = start.isoWeekday();
+      const endDay = end.isoWeekday();
+
       let count = 0;
       for (let i = 0; i < dayValue.length; i++) {
         if (dayValue[i] <= startDay || dayValue[i] > endDay) {
           count++;
         }
       }
-      // console.log("count", count);
-      totalCount = weeksInterval * countPerWeek - count;
+
+      totalCount = (Math.round(diffinWeeks) + 1) * countPerWeek - count;
     }
-    // console.log("Endtotalcount", totalCount);
     return totalCount;
   };
 
@@ -134,8 +131,7 @@ const CreateHabit = ({ navigation }) => {
   //     setErrorHabit({...errorHabit, error: habitError});
   //     return;
   //   }
-  // } 
-
+  // }
 
   useEffect(() => {
     const prepare = () => {
@@ -165,8 +161,8 @@ const CreateHabit = ({ navigation }) => {
     setHabit("");
     setHabitDesc("");
     setFreqValue("weekly");
-    setDayValue([DateTime.now().weekday]);
-    setEndDate(DateTime.now().toJSDate());
+    setDayValue([moment().isoWeekday()]);
+    setEndDate(moment().toDate());
     setIsPrivacyOn(false);
   };
 
@@ -178,7 +174,7 @@ const CreateHabit = ({ navigation }) => {
       if (response) {
         Alert.alert("SUCCESS", "Habit created!", [
           { text: "Ok", onPress: () => clearForm() },
-        ])
+        ]);
       }
     } catch (error) {
       Alert.alert("Plese enter a habit");
@@ -216,7 +212,7 @@ const CreateHabit = ({ navigation }) => {
           //   (value) => twoCallsHabit(value)}
           // error={!!errorHabit.error}
           // errorText={errorHabit.error}
-           />
+        />
 
         <Text style={styles.headerTxt}>Habit Description</Text>
         <TextInput
@@ -225,7 +221,8 @@ const CreateHabit = ({ navigation }) => {
             setHabitDesc(value);
           }}
           value={habitDesc}
-          returnKeyType="next" />
+          returnKeyType="next"
+        />
 
         <Text style={styles.headerTxt}>Repeat</Text>
         <DropDownPicker
@@ -244,9 +241,10 @@ const CreateHabit = ({ navigation }) => {
           }}
           mode="BADGE"
           placeholder="Select Frequency"
-          zIndex={3000} />
+          zIndex={3000}
+        />
         <DropDownPicker
-          style={styles.dayDropdown}
+          style={(styles.dayDropdown, { paddingBottom: 0 })}
           listItemLabelStyle={styles.listItemDropdown}
           dropDownContainerStyle={styles.dropDown}
           badgeTextStyle={styles.badgeTextDropdown}
@@ -264,7 +262,8 @@ const CreateHabit = ({ navigation }) => {
           badgeColors={"#868AE0"}
           badgeDotColors={"#110580"}
           maxHeight={300}
-          zIndex={2000} />
+          zIndex={2000}
+        />
 
         <Text style={styles.headerTxt}>End Date</Text>
         <Button
@@ -285,12 +284,13 @@ const CreateHabit = ({ navigation }) => {
         </Button>
         {show && (
           <DateTimePicker
-            style={{width: "100%"}}
+            style={{ width: "100%" }}
             value={endDate}
             mode={mode}
             is24Hour={true}
             onChange={changeDate}
-            display="spinner" />
+            display="spinner"
+          />
         )}
 
         <Text style={styles.headerTxt}>Habit Privacy</Text>
@@ -299,34 +299,38 @@ const CreateHabit = ({ navigation }) => {
             borderWidth: 0.5,
             borderRadius: 30,
             padding: 10,
-            alignItems: 'center',
-            width: '85%',
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
-        <Text
-          style={{
-            color: '#4E53BA',
-            fontWeight: 'bold',
-          }}>
-          Private
-        </Text>
-        <Switch
-          style={{
-            color: 'black',
+            alignItems: "center",
+            width: "85%",
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
           }}
-          value={isPrivacyOn}
-          onValueChange={onTogglePrivacy}
-          trackColor={{true: '#4E53BA'}} /> 
+        >
+          <Text
+            style={{
+              color: "#4E53BA",
+              fontWeight: "bold",
+            }}
+          >
+            Private
+          </Text>
+          <Switch
+            style={{
+              color: "black",
+            }}
+            value={isPrivacyOn}
+            onValueChange={onTogglePrivacy}
+            trackColor={{ true: "#4E53BA" }}
+          />
         </View>
-        <Text 
+        <Text
           style={{
             fontSize: 10,
             color: "red",
-            alignSelf: 'left',
+            // alignSelf: "left",
             padding: 10,
-          }}>
+          }}
+        >
           *Private habit will only be visible to you.
         </Text>
 
