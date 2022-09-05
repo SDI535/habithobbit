@@ -69,10 +69,11 @@ const Login = ({ navigation }) => {
           resizeMode="contain"
         />
         <KeyboardAvoidingView
-          style={styles.keyboardavoiding}
-          behavior="padding"
+          style={styles.keyboardavoiding2}
+          behavior= {(Platform.OS === 'ios')? "padding" : null}
+          keyboardVerticalOffset={Platform.select({ios: 0, android: 500})}
         >
-          <View style={styles.reginputcontainer}>
+          <View style={styles.logincontainer}>
             <Header>Login</Header>
             <TextInput
               placeholder="Email"

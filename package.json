@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-native-community/datetimepicker": "6.2.0",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-navigation/bottom-tabs": "^6.3.2",
     "@react-navigation/material-top-tabs": "^6.2.2",
@@ -20,9 +21,13 @@
     "expo-secure-store": "~11.3.0",
     "expo-splash-screen": "~0.16.1",
     "expo-status-bar": "~1.4.0",
+    "luxon": "^3.0.3",
+    "moment": "^2.29.4",
     "react": "18.0.0",
     "react-dom": "18.0.0",
+    "react-moment": "^1.1.2",
     "react-native": "0.69.4",
+    "react-native-calendars": "^1.1288.2",
     "react-native-dropdown-picker": "^5.4.2",
     "react-native-gesture-handler": "~2.5.0",
     "react-native-loading-spinner-overlay": "^3.0.1",

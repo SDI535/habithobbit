@@ -30,8 +30,8 @@ export const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     width: windowWidth,
-    // height: windowHeight,
   },
+  // WELCOME PAGE
   welcomecontainer: {
     flex: 1,
     alignItems: "center",
@@ -39,7 +39,7 @@ export const styles = StyleSheet.create({
     padding: 20,
     width: "100%",
     maxWidth: 340,
-    marginTop: "110%",
+    marginTop: (Platform.OS === 'ios') ? "110%" : "87%",
   },
   welcomeheader: {
     fontSize: 32,
@@ -53,8 +53,9 @@ export const styles = StyleSheet.create({
     color: theme.colors.text,
     textAlign: "center",
     fontFamily: "roboto-light",
-    marginBottom: "50%",
+    marginBottom: (Platform.OS === 'ios') ? "50%" : "20%",
   },
+  // MAIN BUTTON
   button: {
     width: 160,
     paddingVertical: 3,
@@ -88,6 +89,7 @@ export const styles = StyleSheet.create({
     lineHeight: 16,
     color: theme.colors.text,
   },
+  // ONBOARD PAGE
   onboardcontainer: {
     flex: 1,
     alignItems: "center",
@@ -107,9 +109,12 @@ export const styles = StyleSheet.create({
   },
   openingheader: {
     fontSize: 32,
+    backgroundColor: (Platform.OS === 'ios') ? null : "rgba(255, 255, 255, 0.75)",
     color: theme.colors.secondary,
     fontFamily: "roboto-bold",
-    paddingVertical: 12,
+    paddingBottom: (Platform.OS === 'ios') ? "2%" : "4%",
+    paddingTop: (Platform.OS === 'ios') ? "2%" : "7%",
+    paddingHorizontal: (Platform.OS === 'ios') ? 0 : "15%",
   },
   openingtext: {
     fontSize: 12,
@@ -153,61 +158,82 @@ export const styles = StyleSheet.create({
     borderRadius: 50,
     marginRight: 9,
   },
+  // REGISTER PAGE
   registercontainer: {
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-start",
-    padding: 10,
+    padding: 0,
     width: windowWidth,
-    paddingTop: "5%",
-    paddingBottom: "10%",
+    paddingTop: (Platform.OS === 'ios') ? "5%" : 0,
+    paddingBottom: (Platform.OS === 'ios') ? "10%" : "7%",
     height: windowHeight,
     backgroundColor: theme.colors.text,
-    // backgroundColor: "blue",
   },
-  registerrow: {
-    flexDirection: "row",
-    paddingTop: "5%",
-  },
-  link: {
-    fontFamily: "roboto-bold",
-    color: theme.colors.primary,
-  },
-  register: {
+  register: { // IMAGE
     flex: 1,
     resizeMode: "contain",
-    width: "55%",
+    width: (Platform.OS === 'ios') ? "55%" : "50%",
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: "20%",
   },
-  registertext: {
-    fontFamily: "roboto-regular",
-    color: theme.colors.subtext,
-  },
-  logincontainer: {
-    width: "80%",
-    height: 50,
-    marginVertical: 12,
+  keyboardavoiding: {
+    flex: 1,
+    marginBottom: (Platform.OS === 'ios') ? 5 : "26%",
+    marginTop: (Platform.OS === 'ios') ? 0 : "3.5%",
+    width: "100%",
+    maxWidth: 400,
+    alignSelf: "center",
+    alignItems: "center",
+    justifyContent: "center",
   },
   reginputcontainer: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
     width: windowWidth,
-    ...Platform.select({
-      ios: {
-        paddingBottom: "25%",
-      },
-      android: {
-        paddingBottom: 0,
-      },
-    }),
-
+    paddingBottom: (Platform.OS === 'ios') ? "15%" : "1%",
     height: windowHeight,
   },
-  logininput: {
-    backgroundColor: "#FFFFFF",
+  registerrow: {
+    flexDirection: "row",
+    paddingTop: (Platform.OS === 'ios') ? "5%" : "2%",
+  },
+  registertext: {
+    fontFamily: "roboto-regular",
+    color: theme.colors.subtext,
+  },
+  link: {
+    fontFamily: "roboto-bold",
+    color: theme.colors.primary,
+  },
+  // LOGIN PAGE
+  keyboardavoiding2: {
+    flex: 1,
+    marginBottom: (Platform.OS === 'ios') ? 5 : "16%",
+    marginTop: (Platform.OS === 'ios') ? 0 : "-5%",
+    paddingTop: (Platform.OS === 'ios') ? 0 : "-10%",
+    width: "100%",
+    maxWidth: 400,
+    alignSelf: "center",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  logincontainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    width: windowWidth,
+    paddingBottom: (Platform.OS === 'ios') ? "25%" : "5%",
+    height: windowHeight,
+  },
+  login: { // IMAGE
+    flex: 1,
+    resizeMode: "contain",
+    width: (Platform.OS === 'ios') ? "65%" : "50%",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: "10%",
   },
   logindescription: {
     fontSize: 13,
@@ -275,37 +301,10 @@ export const styles = StyleSheet.create({
     fontSize: 13,
     color: theme.colors.secondary,
   },
-  login: {
-    flex: 1,
-    resizeMode: "contain",
-    width: "65%",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingTop: "20%",
-  },
-  logininputcontainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    width: windowWidth,
-    // paddingBottom: "45%",
-    height: windowHeight,
-  },
-  keyboardavoiding: {
-    flex: 1,
-    padding: 10,
-    width: "100%",
-    // width: windowWidth,
-    // height: windowHeight,
-    maxWidth: 400,
-    alignSelf: "center",
-    alignItems: "center",
-    justifyContent: "center",
-  },
   // Text input component
   textinputcontainer: {
     width: "85%",
-    marginVertical: 5,
+    marginTop: 5,
   },
   textinput: {
     backgroundColor: theme.colors.text,
@@ -328,7 +327,6 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     paddingVertical: 50,
-    // paddingHorizontal: 20,
     width: "100%",
   },
   profilecontainer: {

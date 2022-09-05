@@ -15,6 +15,7 @@ import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import axiosConn from "../api/config";
 import { getUser } from "../utils/securestore.utils";
 import { AuthContext } from "../contexts/AuthContext";
+import AnimatedLoader from "../components/AnimatedLoader";
 
 const getCurrentDate = () => {
   let day = new Date().getDate();
@@ -79,6 +80,7 @@ const Dashboard = () => {
   ];
   const { authcontext } = useContext(AuthContext);
   const [dayNumbers, setDayNumbers] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const updateSelectedDay = (value) => {
     console.log("enter here: ", value);
@@ -118,6 +120,7 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
+    setIsLoading(true)
     const url = "/api/v1/habits";
     const fetchData = async () => {
       try {
@@ -141,6 +144,7 @@ const Dashboard = () => {
           });
         });
         setHabits(arrayOfHabits);
+        setIsLoading(false)
       } catch (error) {
         console.log(error);
       }
@@ -395,6 +399,7 @@ const Dashboard = () => {
           </ScrollView>
         </View>
       </View>
+      {isLoading ? <AnimatedLoader text="Loading..." /> : null}
     </View>
   );
 };
