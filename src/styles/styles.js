@@ -432,4 +432,32 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     color: theme.colors.text,
   },
+  viewHabitTitle:{
+    fontFamily: "roboto-regular",
+    fontSize: 12,
+    fontWeight: "400",
+    alignSelf: "flex-start",
+    paddingLeft: "5%",
+    color: "#878585",
+    marginTop: "3%"
+  },
+  viewHabitDescription:{
+    fontFamily: "roboto-bold",
+    fontSize: 16,
+    alignSelf: "flex-start",
+    paddingLeft: "5%",
+    marginTop: "1%",
+    color: "#110580"
+  },
+  viewHabit:{
+    flexDirection: "row",
+  },
+  trashcan: {
+    position: "absolute",
+    top: 10 + getStatusBarHeight(),
+    right: 15,
+    padding: 5,
+    borderWidth: 1.5,
+    borderRadius: 50,
+  },
 });
