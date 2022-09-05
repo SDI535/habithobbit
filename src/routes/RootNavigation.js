@@ -6,6 +6,7 @@ import PrivateRoute from "./PrivateRoute";
 import { getToken, getUser } from "../utils/securestore.utils";
 import * as SplashScreen from "expo-splash-screen";
 import useFonts from "../hooks/useFonts";
+import ViewHabit from "../screens/ViewHabit"
 
 SplashScreen.preventAutoHideAsync();
 

@@ -3,6 +3,7 @@ import DashboardScreen from "../screens/Dashboard";
 import Icon from 'react-native-vector-icons/AntDesign'
 import { StyleSheet, Text, View} from "react-native";
 import CreateHabit from "../screens/CreateHabit";
+import ViewHabit from "../screens/ViewHabit";
 
 const Tab = createBottomTabNavigator();
 
@@ -36,7 +37,7 @@ const Tabs = () => {
                     <Icon name="pluscircle" size={49} color={"#4E53BA"} style={{top: 0}}></Icon>
                 ),
             }}/>
-            <Tab.Screen name="Schedule" component={DashboardScreen} options={{
+            <Tab.Screen name="Schedule" component={ViewHabit} options={{
                 tabBarIcon:({focused, color})=>(
                     <Icon name="calendar" size={26} color={color}></Icon>
                 ),

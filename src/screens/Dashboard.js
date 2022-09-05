@@ -80,7 +80,7 @@ const Dashboard = () => {
   const [dayNumbers, setDayNumbers] = useState([]);
 
   const updateSelectedDay = (value) => {
-    console.log("enter here: ", value);
+    // console.log("enter here: ", value);
     setSelectedDay(value);
   };
 
@@ -121,7 +121,7 @@ const Dashboard = () => {
         const response = await axiosConn.get(url);
         const habits = response.data.data;
         const day = dayToWeekdayMapping[selectedDay];
-        console.log(day);
+        // console.log(day);
         const arrayOfHabits = [];
         habits.forEach((x) => {
           let frequency = x.frequency[0];
@@ -145,8 +145,8 @@ const Dashboard = () => {
     fetchData();
   }, [selectedDay]);
 
-  console.log("day:", selectedDay);
-  console.log(habits);
+  // console.log("day:", selectedDay);
+  // console.log(habits);
 
   return (
     <View style={{ backgroundColor: "white" }}>
