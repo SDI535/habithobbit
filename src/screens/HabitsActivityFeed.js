@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { styles } from "../styles/styles";
 import axiosConn from "../api/config";
 import { Avatar, IconButton } from "react-native-paper";
-import { DateTime, Interval } from "luxon";
+import moment from "moment";
 import { getUser } from "../utils/securestore.utils";
 
 const HabitsActivityFeed = () => {
@@ -53,17 +53,13 @@ const HabitsActivityFeed = () => {
   };
 
   const HabitComponent = publicHabits.map((habit) => {
-    console.log(habit);
     const habitId = habit._id;
     const loginUserId = loginUser.id;
     console.log(loginUserId);
     const avatarUrl = habit.user.avatarUrl;
     const likes = habit.likes;
     const likesCount = likes.length;
-    const createdDate = DateTime.fromISO(habit.createdAt);
-    const now = DateTime.now();
-    let i = Interval.fromDateTimes(createdDate, now);
-    let daysFromNow = i.count("days");
+    let daysFromNow = moment(habit.createdAt).fromNow();
 
     return (
       <View key={habitId}>
@@ -87,7 +83,7 @@ const HabitsActivityFeed = () => {
           />
         )}
 
-        <Text>{`created ${daysFromNow} days ago`}</Text>
+        <Text>{`created ${daysFromNow}`}</Text>
         <Text>{`${likesCount} likes`}</Text>
       </View>
     );
@@ -96,7 +92,7 @@ const HabitsActivityFeed = () => {
   return (
     <SafeAreaView>
       <Text style={styles.headerTxt}>Activity Feed </Text>
-      {HabitComponent}
+      <ScrollView>{HabitComponent}</ScrollView>
     </SafeAreaView>
   );
 };
