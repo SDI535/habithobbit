@@ -65,7 +65,8 @@ const OngoingHabits = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container1}>
-        <BackButton goBack={navigation.goBack} />
+        <BackButton goBack={() => navigation.replace("Base", { screen: "Team" })} />
+        {/* <BackButton goBack={navigation.goBack} /> */}
         <Text style={styles.header}>Ongoing Habits</Text>
       </View>
       <View style={styles.container2}>
@@ -148,6 +149,11 @@ const styles = StyleSheet.create({
     paddingBottom: (Platform.OS === 'ios') ? "2%" : "4%",
     paddingTop: (Platform.OS === 'ios') ? "2%" : "7%",
     // paddingHorizontal: (Platform.OS === 'ios') ? 0 : "15%",
+  },
+  arrow: {
+    fontSize: 32,
+    // flex: 1,
+    // width: '50%',
   },
 });
 

@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import {
+    Alert,
     Text,
     TouchableOpacity,
     View,
+    Image,
 } from "react-native";
 import { styles } from "../styles/styles";
 import BackButton from "../components/loginBackButton";
@@ -16,6 +18,8 @@ import React from "react";
 import Moment from "react-moment";
 import moment from "moment";
 import AnimatedLoader from "../components/AnimatedLoader";
+import { IconButton, Modal, Portal, Provider } from "react-native-paper";
+import Button from "../components/loginButton";
 
 
 const ViewHabit = ({ route, navigation }) => {
@@ -30,6 +34,18 @@ const ViewHabit = ({ route, navigation }) => {
     const [habitName, setHabitName] = useState("Sleep more")
     const [dates, setDates] = useState();
     const [isLoading, setIsLoading] = useState(false);
+    const [visible, setVisible] = useState(false);
+
+    const showModal = () => setVisible(true);
+    const hideModal = () => setVisible(false);
+    const containerStyle = {
+        backgroundColor: "white",
+        padding: 20,
+        width: "95%",
+        borderRadius: 20,
+        alignSelf: "center",
+        alignItems: "center",
+    };
 
     // listOfDates.forEach((day) => {
     //     newDaysObject[day] = {
@@ -38,7 +54,7 @@ const ViewHabit = ({ route, navigation }) => {
     // })
 
     // const exampleHabit = '62fc6d14996aca158ce458b2' //To be replaced with props passed in
-    const {exampleHabit} = route.params;
+    const { exampleHabit } = route.params;
 
     useEffect(() => {
         setIsLoading(true);
@@ -50,7 +66,7 @@ const ViewHabit = ({ route, navigation }) => {
                 setHabitDesc(response.data.data.description);
                 setHabitName(response.data.data.name);
                 setIsLoading(false);
-                if (response.data.data.private == false){
+                if (response.data.data.private == false) {
                     setPrivacy("Public")
                 } else {
                     setPrivacy("Private")
@@ -75,36 +91,36 @@ const ViewHabit = ({ route, navigation }) => {
                         }
                     })
                     setDates(newDaysObject);
-                } else if (frequency[0].repeat == "weekly"){
+                } else if (frequency[0].repeat == "weekly") {
                     let current = new Date(createdAt);
                     let end = new Date(endDate)
                     let listOfDates = [];
                     let newDaysObject = {};
-                    if (frequency[0].mon == true){
+                    if (frequency[0].mon == true) {
                         let output = datesCalculation(1, current, end)
                         listOfDates = listOfDates.concat(output);
                     }
-                    if (frequency[0].tues == true){
+                    if (frequency[0].tues == true) {
                         let output = datesCalculation(2, current, end)
                         listOfDates = listOfDates.concat(output);
                     }
-                    if (frequency[0].wed == true){
+                    if (frequency[0].wed == true) {
                         let output = datesCalculation(3, current, end)
                         listOfDates = listOfDates.concat(output);
                     }
-                    if (frequency[0].thurs == true){
+                    if (frequency[0].thurs == true) {
                         let output = datesCalculation(4, current, end)
                         listOfDates = listOfDates.concat(output);
                     }
-                    if (frequency[0].fri == true){
+                    if (frequency[0].fri == true) {
                         let output = datesCalculation(5, current, end)
                         listOfDates = listOfDates.concat(output);
                     }
-                    if (frequency[0].sat == true){
+                    if (frequency[0].sat == true) {
                         let output = datesCalculation(6, current, end)
                         listOfDates = listOfDates.concat(output);
                     }
-                    if (frequency[0].sun == true){
+                    if (frequency[0].sun == true) {
                         let output = datesCalculation(0, current, end)
                         listOfDates = listOfDates.concat(output);
                     }
@@ -120,12 +136,12 @@ const ViewHabit = ({ route, navigation }) => {
             }
         };
         fetchData();
-    },[]);
+    }, []);
 
     const datesCalculation = (weekday, current, end) => {
         let calculatedDates = []
         let upcomingDay = new Date(current);
-        upcomingDay.setDate(current.getDate()+((7-current.getDay())%7+weekday)%7);
+        upcomingDay.setDate(current.getDate() + ((7 - current.getDay()) % 7 + weekday) % 7);
         while (upcomingDay <= end) {
             calculatedDates.push(moment(upcomingDay).local().format("YYYY-MM-DD"))
             upcomingDay.setDate(upcomingDay.getDate() + 7)
@@ -133,10 +149,24 @@ const ViewHabit = ({ route, navigation }) => {
         return calculatedDates
     }
 
+    const deleteHabit = async () => {
+        const endPoint = `/api/v1/habits/${exampleHabit}`;
+        try {
+            const response = await axiosConn.delete(endPoint);
+            if (response) {
+                Alert.alert("SUCCESS", "Habit deleted", [{ text: "Ok", onPress: () => { navigation.replace("Base", { screen: "Home" }) } }]);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+
     return (
+        <Provider>
         <View style={styles.habitcontainer}>
-            <BackButton goBack={navigation.goBack}/>
-            <TouchableOpacity style={styles.trashcan}>
+            <BackButton goBack={navigation.goBack} />
+            <TouchableOpacity style={styles.trashcan} onPress={showModal}>
                 <FontAwesome
                     name="trash-o"
                     size={20}
@@ -185,7 +215,32 @@ const ViewHabit = ({ route, navigation }) => {
             <Text style={styles.viewHabitTitle}>Habit Privacy</Text>
             <Text style={styles.viewHabitDescription}> {privacy} </Text>
             {isLoading ? <AnimatedLoader text="Loading..." /> : null}
+            <Portal>
+                <Modal
+                    visible={visible}
+                    onDismiss={hideModal}
+                    contentContainerStyle={containerStyle}
+                >
+                    <Image source={require("../assets/Wait.png")} />
+                    <Text style={styles.popheader}>W...Wait!</Text>
+                    <Text style={styles.popTxt}>
+                        Are you sure you want to delete this habits?
+                    </Text>
+                    <View style={{ flexDirection: "row" }}>
+                        <Button style={styles.buttonNot} onPress={hideModal}>
+                            Nahh
+                        </Button>
+                        <Button
+                            style={styles.buttonYes}
+                            onPress={() => deleteHabit()}
+                        >
+                            Sure!
+                        </Button>
+                    </View>
+                </Modal>
+            </Portal>
         </View>
+        </Provider>
     );
 };
 

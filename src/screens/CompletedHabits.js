@@ -65,7 +65,8 @@ const CompletedHabits = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container1}>
-        <BackButton goBack={navigation.goBack} />
+      <BackButton goBack={() => navigation.replace("Base", { screen: "Team" })} />
+        {/* <BackButton goBack={navigation.goBack} /> */}
         <Text style={styles.header}>Completed Habits</Text>
       </View>
       <View style={styles.container2}>

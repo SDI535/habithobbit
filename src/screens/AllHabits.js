@@ -82,18 +82,18 @@ const AllHabits = ({ navigation }) => {
             </View>
             <Text style={styles.title}>Total Habits</Text>
           </View>
-          <TouchableOpacity style={styles.item} onPress={() => navigation.navigate("CompletedHabits")}>
+          <TouchableOpacity style={styles.item} onPress={() => navigation.replace("CompletedHabits")}>
             <Text>     </Text>
             <View style={styles.percent} backgroundColor={"#78CFBD"}>
-              <Text style={styles.count}> {onHabits} </Text>
+              <Text style={styles.count}> {comHabits} </Text>
             </View>
             <Text style={styles.title}>Completed Habits</Text>
             <Text style={styles.arrow}>  ❯  </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.item} onPress={() => navigation.navigate("OngoingHabits")}>
+          <TouchableOpacity style={styles.item} onPress={() => navigation.replace("OngoingHabits")}>
             <Text>     </Text>
             <View style={styles.percent} backgroundColor={"#FF9F6A"}>
-              <Text style={styles.count}>{comHabits}</Text>
+              <Text style={styles.count}>{onHabits}</Text>
             </View>
             <Text style={styles.title}>Ongoing Habits</Text>
             <Text style={styles.arrow}>  ❯  </Text>

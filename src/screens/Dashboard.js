@@ -159,7 +159,16 @@ const Dashboard = () => {
     <View style={{ backgroundColor: "white" }}>
       <View style={[styles.margin]}>
         <View style={styles.container}>
-          <Avatar.Image size={64} source={{ uri: avatarUrl }}></Avatar.Image>
+          {/* <Avatar.Image size={64} source={{ uri: avatarUrl }}></Avatar.Image> */}
+
+          {avatarUrl ? (
+                        <Avatar.Image
+                        size={64} source={{ uri: avatarUrl }}
+                        />
+                    ) : (
+                        <Avatar.Icon style={styles.profilepic} size={64} icon="account" />
+                    )}
+
           <View style={styles.container2}>
             <Text style={styles.welcome}> WELCOME!</Text>
             <Text style={styles.username}> {userName} </Text>
