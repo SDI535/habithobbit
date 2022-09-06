@@ -8,6 +8,10 @@ import { createStackNavigator } from "@react-navigation/stack";
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import AllHabits from "../screens/AllHabits";
+import CompletedHabits from "../screens/CompletedHabits";
+import OngoingHabits from "../screens/OngoingHabits";
+import ViewHabit from "../screens/ViewHabit";
 
 const Tabs = () => {
   return (
@@ -36,7 +40,7 @@ const Tabs = () => {
       />
       <Tab.Screen
         name="Team"
-        component={DashboardScreen}
+        component={AllHabits}
         options={{
           tabBarIcon: ({ focused, color }) => (
             <Icon name="team" size={26} color={color}></Icon>
@@ -89,6 +93,9 @@ const PrivateRoute = () => {
       }}
     >
       <Stack.Screen name="Base" component={Tabs} />
+      <Stack.Screen name="OngoingHabits" component={OngoingHabits} />
+      <Stack.Screen name="CompletedHabits" component={CompletedHabits} />
+      <Stack.Screen name="ViewHabit" component={ViewHabit} />
     </Stack.Navigator>
   );
 };

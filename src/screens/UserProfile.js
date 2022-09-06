@@ -387,7 +387,7 @@ const UserProfile = ({ navigation }) => {
                     </Portal>
                 </View>
             </KeyboardAvoidingView>
-            {isLoading ? <AnimatedLoader text="Logging in..." /> : null}
+            {isLoading ? <AnimatedLoader text="Loading..." /> : null}
         </Provider>
     );
 };

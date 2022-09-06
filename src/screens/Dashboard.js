@@ -15,6 +15,7 @@ import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import axiosConn from "../api/config";
 import { getUser } from "../utils/securestore.utils";
 import { AuthContext } from "../contexts/AuthContext";
+import AnimatedLoader from "../components/AnimatedLoader";
 
 const getCurrentDate = () => {
   let day = new Date().getDate();
@@ -79,9 +80,10 @@ const Dashboard = () => {
   ];
   const { authcontext } = useContext(AuthContext);
   const [dayNumbers, setDayNumbers] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const updateSelectedDay = (value) => {
-    console.log("enter here: ", value);
+    // console.log("enter here: ", value);
     setSelectedDay(value);
   };
 
@@ -118,13 +120,14 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
+    setIsLoading(true)
     const url = "/api/v1/habits";
     const fetchData = async () => {
       try {
         const response = await axiosConn.get(url);
         const habits = response.data.data;
         const day = dayToWeekdayMapping[selectedDay];
-        console.log(day);
+        // console.log(day);
         const arrayOfHabits = [];
         habits.forEach((x) => {
           let frequency = x.frequency[0];
@@ -141,6 +144,7 @@ const Dashboard = () => {
           });
         });
         setHabits(arrayOfHabits);
+        setIsLoading(false)
       } catch (error) {
         console.log(error);
       }
@@ -148,8 +152,8 @@ const Dashboard = () => {
     fetchData();
   }, [selectedDay]);
 
-  console.log("day:", selectedDay);
-  console.log(habits);
+  // console.log("day:", selectedDay);
+  // console.log(habits);
 
   return (
     <View style={{ backgroundColor: "white" }}>
@@ -395,6 +399,7 @@ const Dashboard = () => {
           </ScrollView>
         </View>
       </View>
+      {isLoading ? <AnimatedLoader text="Loading..." /> : null}
     </View>
   );
 };
