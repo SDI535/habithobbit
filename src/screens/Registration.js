@@ -104,7 +104,8 @@ const Registration = ({ navigation }) => {
         />
         <KeyboardAvoidingView
           style={styles.keyboardavoiding}
-          behavior="padding"
+          behavior= {(Platform.OS === 'ios')? "padding" : null}
+          keyboardVerticalOffset={Platform.select({ios: 0, android: 500})}
         >
           <View style={styles.reginputcontainer}>
             <Header>Sign Up</Header>

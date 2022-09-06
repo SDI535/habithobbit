@@ -65,6 +65,7 @@ const getDayNumber = () => {
 
 const Dashboard = () => {
   const [userName, setUsername] = useState("Username");
+  const [avatarUrl, setAvatarUrl] = useState("");
   const [habits, setHabits] = useState([]);
   const [selectedDay, setSelectedDay] = useState(new Date().getDay());
   const dayToWeekdayMapping = [
@@ -106,7 +107,9 @@ const Dashboard = () => {
       try {
         const response = await axiosConn.get(url);
         const username = response.data.data.username; //Did not use getUser since it returns a promise on console log
+        const avatarUrl = response.data.data.avatarUrl;
         setUsername(username);
+        setAvatarUrl(avatarUrl);
       } catch (error) {
         console.log(error.response);
       }
@@ -152,7 +155,7 @@ const Dashboard = () => {
     <View style={{ backgroundColor: "white" }}>
       <View style={[styles.margin]}>
         <View style={styles.container}>
-          <Avatar.Image size={64} source={iconImage}></Avatar.Image>
+          <Avatar.Image size={64} source={{ uri: avatarUrl }}></Avatar.Image>
           <View style={styles.container2}>
             <Text style={styles.welcome}> WELCOME!</Text>
             <Text style={styles.username}> {userName} </Text>
@@ -412,7 +415,7 @@ const styles = StyleSheet.create({
     height: 100,
     width: "100%",
     backgroundColor: "#E8E8F7",
-    borderRadius: "30%",
+    borderRadius: 30,
     marginTop: 13,
     flexDirection: "row",
     flex: 1,
@@ -444,7 +447,7 @@ const styles = StyleSheet.create({
     height: "90%",
     backgroundColor: "white",
     alignSelf: "center",
-    borderRadius: "20%",
+    borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
     borderColor: "#4E53BA",
@@ -496,7 +499,7 @@ const styles = StyleSheet.create({
     color: "#110580",
     flex: 1,
     flexWrap: "wrap",
-    marginRight: 10
+    marginRight: 10,
   },
   exitContainer: {
     flex: 1,
