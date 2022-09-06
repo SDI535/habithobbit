@@ -1,36 +1,116 @@
-import { View, Text, SafeAreaView, ScrollView, Alert } from "react-native";
-import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  Alert,
+  FlatList,
+  Animated,
+} from "react-native";
+import React, { useEffect, useState, useContext } from "react";
 import { styles } from "../styles/styles";
 import axiosConn from "../api/config";
-import { Avatar, IconButton } from "react-native-paper";
+import {
+  ActivityIndicator,
+  Avatar,
+  IconButton,
+  TextInput,
+} from "react-native-paper";
 import moment from "moment";
 import { getUser } from "../utils/securestore.utils";
+import { AuthContext } from "../contexts/AuthContext";
+import AnimatedLoader from "../components/AnimatedLoader";
 
 const HabitsActivityFeed = () => {
   const [publicHabits, setPublicHabits] = useState([]);
+  const [filteredHabits, setFilteredHabits] = useState([]);
   const [isLikePressed, setIsLikePressed] = useState(false);
   const [loginUser, setLoginUser] = useState({});
+  const [currentPage, setCurrentPage] = useState(0);
+  const { isLoading, setIsLoading } = useContext(AuthContext);
+  const [showSearchBar, setShowSearchBar] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [refreshingFlatList, setRefreshingFlatList] = useState(false);
 
   useEffect(() => {
-    const endPoint = "/api/v1/habits/public";
-    const fetchData = async () => {
+    const getUserFromSStore = async () => {
+      const user = await getUser();
+      setLoginUser(JSON.parse(user));
+    };
+    getUserFromSStore();
+  }, []);
+
+  useEffect(() => {
+    fetchPublicHabits();
+  }, [currentPage]);
+
+  //for refreshing flat List
+  useEffect(() => {
+    if (refreshingFlatList) {
+      setCurrentPage(0);
+      fetchPublicHabits();
+      setRefreshingFlatList(false);
+    }
+  }, [refreshingFlatList]);
+
+  const fetchPublicHabits = async () => {
+    const endPoint = `/api/v1/habits/public/?p=${currentPage}`;
+    if (currentPage > 0) {
       try {
-        const result = await getUser();
-        setLoginUser(JSON.parse(result));
+        setIsLoading(true);
         const response = await axiosConn.get(endPoint);
-        setPublicHabits(response.data.data);
+        setPublicHabits((prev) => [...prev, ...response.data.data]);
+        setFilteredHabits((prev) => [...prev, ...response.data.data]);
+        setIsLoading(false);
       } catch (error) {
         console.log(error.response);
       }
-    };
-    fetchData();
-  }, [isLikePressed]);
+    } else {
+      try {
+        setIsLoading(true);
+        const response = await axiosConn.get(endPoint);
+        setPublicHabits(response.data.data);
+        setFilteredHabits(response.data.data);
+        setIsLoading(false);
+      } catch (error) {
+        console.log(error.response);
+      }
+    }
+  };
+
+  //search Habit
+  const searchHabits = (text) => {
+    if (text) {
+      const filteredPublicHabits = publicHabits.filter((habit) => {
+        const habitNameInUpper = `${habit.name.toUpperCase()}`;
+        const textData = text.toUpperCase();
+        return habitNameInUpper.indexOf(textData) > -1;
+      });
+      setFilteredHabits(filteredPublicHabits);
+      setSearchText(text);
+    } else {
+      setFilteredHabits(publicHabits);
+      setSearchText(text);
+    }
+  };
+
+  const loadMoreHabits = () => {
+    setCurrentPage((prev) => prev + 1);
+  };
 
   const unlikeHabit = async (habitId) => {
     const endPoint = `/api/v1/habits/${habitId}/unlike`;
     try {
       const response = await axiosConn.put(endPoint);
       if (response) {
+        const updatedHabit = response.data.data;
+
+        const result = publicHabits.map((habit) =>
+          habit._id === updatedHabit._id ? updatedHabit : habit
+        );
+
+        setPublicHabits(result);
+        setFilteredHabits(result);
+
         setIsLikePressed((prev) => !prev);
         Alert.alert("You unlike a habit!");
       }
@@ -39,11 +119,22 @@ const HabitsActivityFeed = () => {
     }
   };
 
+  //if user loads more, page = 1, scrollback to 0 and like a post, mongoDB is updated and should
+  //update existing publichabit.likes with the loginUserID
+
   const likeHabit = async (habitId) => {
     const endPoint = `/api/v1/habits/${habitId}/like`;
     try {
       const response = await axiosConn.put(endPoint);
       if (response) {
+        const updatedHabit = response.data.data;
+        const result = publicHabits.map((habit) =>
+          habit._id === updatedHabit._id ? updatedHabit : habit
+        );
+
+        setPublicHabits(result);
+        setFilteredHabits(result);
+
         setIsLikePressed((prev) => !prev);
         Alert.alert("You like a habit!");
       }
@@ -52,47 +143,165 @@ const HabitsActivityFeed = () => {
     }
   };
 
-  const HabitComponent = publicHabits.map((habit) => {
-    const habitId = habit._id;
+  //Each habit card
+  const habitComponent = ({ item }) => {
+    const habitId = item._id;
     const loginUserId = loginUser.id;
-    console.log(loginUserId);
-    const avatarUrl = habit.user.avatarUrl;
-    const likes = habit.likes;
+    const avatarUrl = item.user.avatarUrl;
+    const likes = item.likes;
     const likesCount = likes.length;
-    let daysFromNow = moment(habit.createdAt).fromNow();
+    let daysFromNow = moment(item.createdAt).fromNow();
 
     return (
-      <View key={habitId}>
-        <Avatar.Image size={40} source={{ uri: avatarUrl }} />
-        <Text>{habit.user.username}</Text>
-        <Text>{habit.name}</Text>
+      <View
+        key={item._id}
+        style={{
+          backgroundColor: "#E8E8F7",
+          marginBottom: 20,
+          padding: 20,
+          borderRadius: 30,
+          flex: 1,
+        }}
+      >
+        <View style={{ flex: 1, flexDirection: "row" }}>
+          {avatarUrl ? (
+            <Avatar.Image size={40} source={{ uri: avatarUrl }} />
+          ) : (
+            <Avatar.Icon
+              size={40}
+              icon="account-outline"
+              color="#ffffff"
+              style={{ backgroundColor: "#868AE0" }}
+            />
+          )}
 
-        {habit.likes.includes(loginUserId) ? (
-          <IconButton
-            size={22}
-            icon="heart"
-            color="red"
-            onPress={() => unlikeHabit(habitId)}
-          />
-        ) : (
-          <IconButton
-            size={22}
-            icon="heart-outline"
-            color="#000000"
-            onPress={() => likeHabit(habitId)}
-          />
-        )}
-
-        <Text>{`created ${daysFromNow}`}</Text>
-        <Text>{`${likesCount} likes`}</Text>
+          <View style={{ flex: 1, paddingHorizontal: 10 }}>
+            <Text style={{ color: "#4E53BA", fontSize: 18, lineHeight: 16 }}>
+              {item.user.username}
+              {loginUserId === item.user._id ? "(You)" : null}
+            </Text>
+            <Text
+              style={{
+                color: "#4E53BA",
+                fontSize: 8,
+                lineHeight: 16,
+                fontFamily: "roboto-light",
+              }}
+            >{`created ${daysFromNow}`}</Text>
+          </View>
+          <View>
+            {item.likes.includes(loginUserId) ? (
+              <IconButton
+                size={22}
+                icon="heart"
+                color="red"
+                animated={true}
+                rippleColor="rgba(255,0,0,0.5)"
+                onPress={() => unlikeHabit(habitId)}
+              />
+            ) : (
+              <IconButton
+                size={22}
+                icon="heart-outline"
+                color="#000000"
+                rippleColor="rgba(255,0,0,0.5)"
+                onPress={() => likeHabit(habitId)}
+              />
+            )}
+            <Text
+              style={{
+                color: "#4E53BA",
+                fontSize: 12,
+                lineHeight: 16,
+                fontFamily: "roboto-medium",
+              }}
+            >{`${likesCount} likes`}</Text>
+          </View>
+        </View>
+        <View style={{ flex: 1, paddingLeft: 20 }}>
+          <Text
+            numberOfLines={1}
+            style={{
+              color: "#4E53BA",
+              fontSize: 20,
+              lineHeight: 20,
+              fontFamily: "roboto-bold",
+            }}
+          >
+            {item.name}
+          </Text>
+        </View>
       </View>
     );
-  });
+  };
 
   return (
-    <SafeAreaView>
-      <Text style={styles.headerTxt}>Activity Feed </Text>
-      <ScrollView>{HabitComponent}</ScrollView>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "flex-start",
+        backgroundColor: "white",
+        width: "100%",
+      }}
+    >
+      <View
+        style={{
+          flex: 0.8,
+          flexDirection: "row",
+          width: "100%",
+          height: 250,
+          alignItems: "stretch",
+          paddingHorizontal: 30,
+        }}
+      >
+        {showSearchBar ? (
+          <TextInput
+            style={{ width: "85%", backgroundColor: "transparent" }}
+            mode="outlined"
+            placeholder="Search habit..."
+            outlineColor="#878585"
+            activeOutlineColor="#110580"
+            dense={true}
+            value={searchText}
+            onChangeText={(searchText) => {
+              searchHabits(searchText);
+            }}
+          />
+        ) : null}
+        <IconButton
+          style={{ position: "absolute", right: 0 }}
+          icon="magnify"
+          color="#878585"
+          size={30}
+          onPress={() => {
+            setShowSearchBar((prev) => !prev);
+          }}
+        />
+      </View>
+      <Text
+        style={{
+          fontFamily: "roboto-bold",
+          fontSize: 32,
+          color: "#110580",
+          alignSelf: "center",
+        }}
+      >
+        Activity Feed{" "}
+      </Text>
+
+      <View style={{ flex: 10, width: "100%", padding: 30 }}>
+        <FlatList
+          style={{}}
+          data={filteredHabits}
+          renderItem={habitComponent}
+          onEndReached={loadMoreHabits}
+          onEndReachedThreshold={0}
+          refreshing={refreshingFlatList}
+          onRefresh={() => setRefreshingFlatList(true)}
+        />
+        {isLoading ? <AnimatedLoader /> : null}
+      </View>
     </SafeAreaView>
   );
 };
