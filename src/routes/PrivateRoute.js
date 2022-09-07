@@ -19,10 +19,11 @@ const Tabs = () => {
           borderTopWidth: 0,
           justifyContent: "center",
           alignItems: "center",
+          height: "10%" 
         },
         tabBarShowLabel: false,
-        tabBarActiveTintColor: "black",
-        tabBarInactiveTintColor: "grey",
+        tabBarActiveTintColor: "#110580",
+        tabBarInactiveTintColor: "#868AE0",
       }}
     >
       <Tab.Screen

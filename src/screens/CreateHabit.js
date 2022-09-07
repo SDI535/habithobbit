@@ -197,158 +197,168 @@ const CreateHabit = ({ navigation }) => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.habitcontainer}>
-        <BackButton goBack={navigation.goBack} />
-        <Text style={styles.topHeader}>Create Habit</Text>
-        <Text style={styles.headerTxt}>Habit</Text>
-        <TextInput
-          placeholder="Enter a Habit"
-          value={habit}
-          returnKeyType="next"
-          onChangeText={(value) => {
-            setHabit(value);
-          }}
-          // onChangeText={
-          //   (value) => twoCallsHabit(value)}
-          // error={!!errorHabit.error}
-          // errorText={errorHabit.error}
-        />
-
-        <Text style={styles.headerTxt}>Habit Description</Text>
-        <TextInput
-          placeholder="Enter a Description"
-          onChangeText={(value) => {
-            setHabitDesc(value);
-          }}
-          value={habitDesc}
-          returnKeyType="next"
-        />
-
-        <Text style={styles.headerTxt}>Repeat</Text>
-        <DropDownPicker
-          style={styles.freqDropdown}
-          placeholderStyle={styles.freqPlaceholder}
-          textStyle={styles.freqText}
-          dropDownContainerStyle={styles.dropDown}
-          open={openFreq}
-          value={freqValue}
-          items={freq}
-          setOpen={setOpenFreq}
-          setValue={setFreqValue}
-          setItems={setFreq}
-          onChangeValue={(value) => {
-            selectAllDays(value);
-          }}
-          mode="BADGE"
-          placeholder="Select Frequency"
-          zIndex={3000}
-        />
-        <DropDownPicker
-          style={(styles.dayDropdown, { paddingBottom: 0 })}
-          listItemLabelStyle={styles.listItemDropdown}
-          dropDownContainerStyle={styles.dropDown}
-          badgeTextStyle={styles.badgeTextDropdown}
-          open={openDay}
-          value={dayValue}
-          items={day}
-          setOpen={setOpenDay}
-          setValue={setDayValue}
-          setItems={setDay}
-          onChangeValue={(value) => {
-            selectFreq(value);
-          }}
-          mode="BADGE"
-          multiple={true}
-          badgeColors={"#868AE0"}
-          badgeDotColors={"#110580"}
-          maxHeight={300}
-          zIndex={2000}
-        />
-
-        <Text style={styles.headerTxt}>End Date</Text>
-        <Button
-          style={{
-            width: "85%",
-            maxHeight: 60,
-            backgroundColor: "transparent",
-          }}
-          labelStyle={{
-            color: "#000000",
-          }}
-          onPress={() => {
-            setShow((prev) => !prev);
-          }}
-          mode="outlined"
-        >
-          {`${prettyDate}`}{" "}
-        </Button>
-        {show && (
-          <DateTimePicker
-            style={{ width: "100%" }}
-            value={endDate}
-            mode={mode}
-            is24Hour={true}
-            onChange={changeDate}
-            display="spinner"
+      <ScrollView>
+        <View style={styles.habitcontainer}>
+          <BackButton goBack={navigation.goBack} />
+          <Text style={styles.topHeader}>Create Habit</Text>
+          <Text style={styles.headerTxt}>Habit</Text>
+          <TextInput
+            placeholder="Enter a Habit"
+            value={habit}
+            returnKeyType="next"
+            onChangeText={(value) => {
+              setHabit(value);
+            }}
+            // onChangeText={
+            //   (value) => twoCallsHabit(value)}
+            // error={!!errorHabit.error}
+            // errorText={errorHabit.error}
           />
-        )}
 
-        <Text style={styles.headerTxt}>Habit Privacy</Text>
-        <View
-          style={{
-            borderWidth: 0.5,
-            borderRadius: 30,
-            padding: 10,
-            alignItems: "center",
-            width: "85%",
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
+          <Text style={styles.headerTxt}>Habit Description</Text>
+          <TextInput
+            placeholder="Enter a Description"
+            onChangeText={(value) => {
+              setHabitDesc(value);
+            }}
+            value={habitDesc}
+            returnKeyType="next"
+          />
+
+          <Text style={styles.headerTxt}>Repeat</Text>
+          <DropDownPicker
+            style={styles.freqDropdown}
+            placeholderStyle={styles.freqPlaceholder}
+            textStyle={styles.freqText}
+            dropDownContainerStyle={styles.dropDown}
+            open={openFreq}
+            value={freqValue}
+            items={freq}
+            setOpen={setOpenFreq}
+            setValue={setFreqValue}
+            setItems={setFreq}
+            onChangeValue={(value) => {
+              selectAllDays(value);
+            }}
+            mode="BADGE"
+            placeholder="Select Frequency"
+            zIndex={3000}
+          />
+          <DropDownPicker
+            style={styles.dayDropdown}
+            // style={(styles.dayDropdown, { paddingBottom: 0 })}
+            listItemLabelStyle={styles.listItemDropdown}
+            dropDownContainerStyle={styles.dropDown}
+            badgeTextStyle={styles.badgeTextDropdown}
+            open={openDay}
+            value={dayValue}
+            items={day}
+            setOpen={setOpenDay}
+            setValue={setDayValue}
+            setItems={setDay}
+            onChangeValue={(value) => {
+              selectFreq(value);
+            }}
+            mode="BADGE"
+            multiple={true}
+            badgeColors={"#868AE0"}
+            badgeDotColors={"#110580"}
+            maxHeight={300}
+            zIndex={2000}
+          />
+
+          <Text style={styles.headerTxt}>End Date</Text>
+          <Button
+            style={styles.endDate}
+            // style={{
+            //   width: "85%",
+            //   maxHeight: 60,
+            //   backgroundColor: "transparent",
+            // }}
+            labelStyle={styles.endDateLabel}
+            // labelStyle={{
+            //   color: "#4E53BA",
+              
+            // }}
+            onPress={() => {
+              setShow((prev) => !prev);
+            }}
+            mode="outlined"
+          >
+            {`${prettyDate}`}{" "}
+          </Button>
+          {show && (
+            <DateTimePicker
+              style={{ width: "100%" }}
+              value={endDate}
+              mode={mode}
+              is24Hour={true}
+              onChange={changeDate}
+              display="spinner"
+            />
+          )}
+
+          <Text style={styles.headerTxt}>Habit Privacy</Text>
+          <View
+            style={styles.privacyContainer}
+            // style={{
+            //   borderWidth: 0.5,
+            //   borderRadius: 50,
+            //   paddingVertical: 18,
+            //   paddingHorizontal: 20,
+            //   alignItems: "center",
+            //   width: "85%",
+            //   display: "flex",
+            //   flexDirection: "row",
+            //   justifyContent: "space-between",
+            //   marginTop: "3%"
+            // }}
+          >
+            <Text
+              style={{
+                color: "#4E53BA",
+                fontWeight: "bold",
+              }}
+            >
+              Private
+            </Text>
+            <Switch
+              style={{
+                color: "black",
+              }}
+              value={isPrivacyOn}
+              onValueChange={onTogglePrivacy}
+              trackColor={{ true: "#4E53BA" }}
+            />
+          </View>
           <Text
-            style={{
-              color: "#4E53BA",
-              fontWeight: "bold",
+            style={styles.privacyText}
+            // style={{
+            //   fontSize: 10,
+            //   color: "red",
+            //   // alignSelf: "left",
+            //   padding: 10,
+            // }}
+          >
+            *Private habit will only be visible to you.
+          </Text>
+
+          <Button
+            style={styles.button}
+            onPress={() => {
+              // if (habit === "") {
+              //   habitInputError();
+              // } else {
+              //   createHabit();
+              // }
+              createHabit();
+              // habitInputError();
             }}
           >
-            Private
-          </Text>
-          <Switch
-            style={{
-              color: "black",
-            }}
-            value={isPrivacyOn}
-            onValueChange={onTogglePrivacy}
-            trackColor={{ true: "#4E53BA" }}
-          />
+            Create
+          </Button>
         </View>
-        <Text
-          style={{
-            fontSize: 10,
-            color: "red",
-            // alignSelf: "left",
-            padding: 10,
-          }}
-        >
-          *Private habit will only be visible to you.
-        </Text>
-
-        <Button
-          style={styles.button}
-          onPress={() => {
-            // if (habit === "") {
-            //   habitInputError();
-            // } else {
-            //   createHabit();
-            // }
-            createHabit();
-            // habitInputError();
-          }}
-        >
-          Create
-        </Button>
-      </View>
+      </ScrollView>
     </TouchableWithoutFeedback>
   );
 };

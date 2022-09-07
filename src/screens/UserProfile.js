@@ -275,9 +275,10 @@ const UserProfile = ({ navigation }) => {
                     <IconButton
                         style={styles.camerabtn}
                         icon="camera"
+                        color="#fff"
                         // iconColor= "red"
                         // containerColor="#110580"
-                        size={25}
+                        size={22}
                         onPress={() => {
                             pickImage();
                         }}
@@ -387,7 +388,7 @@ const UserProfile = ({ navigation }) => {
                     </Portal>
                 </View>
             </KeyboardAvoidingView>
-            {isLoading ? <AnimatedLoader text="Logging in..." /> : null}
+            {isLoading ? <AnimatedLoader text="Loading..." /> : null}
         </Provider>
     );
 };
