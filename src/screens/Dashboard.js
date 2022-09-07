@@ -6,8 +6,9 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ScrollView,
+  StatusBar
 } from "react-native";
-import { Directions } from "react-native-gesture-handler";
+import { Directions, FlatList } from "react-native-gesture-handler";
 import { Avatar, Colors } from "react-native-paper";
 import iconImage from "../assets/pexels-serena-koi-1576193.jpg";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -16,6 +17,7 @@ import axiosConn from "../api/config";
 import { getUser } from "../utils/securestore.utils";
 import { AuthContext } from "../contexts/AuthContext";
 import AnimatedLoader from "../components/AnimatedLoader";
+import CircularProgress from "../components/CircularProgress";
 
 const getCurrentDate = () => {
   let day = new Date().getDate();
@@ -81,6 +83,49 @@ const Dashboard = () => {
   const { authcontext } = useContext(AuthContext);
   const [dayNumbers, setDayNumbers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isPressed, setIsPress] = useState(false)
+  const [selectedId, setSelectedId] = useState([]);
+  const [refresh, setRefresh] = useState(false);
+  const [counter, setCounter] = useState(1);
+
+  const updateHabit = async (id,currentCount) => {
+    const data = {
+      currentCount: currentCount
+  }
+    try {
+      const url = `/api/v1/habits/${id}`
+      const response = await axiosConn.put(url,data);
+      setRefresh(!refresh);
+      setCounter(counter+1);
+      console.log("results are", response.data.data.currentCount);
+    } catch (error) {
+      console.log(error.response);
+    }
+  }
+
+  const onPress = async (id, currentCount) => {
+    setRefresh(!refresh);
+    console.log("current count is ", currentCount)
+    if (selectedId.indexOf(id) == -1) {
+      const inputtedValue = id
+      const newList = [];
+      newList.push(inputtedValue);
+      const updatedList = [...newList, ...selectedId];
+      // console.log("updatedList", updatedList)
+      setSelectedId(updatedList);
+      const updatedCount = currentCount+1
+      await updateHabit(id,updatedCount)
+      // console.log("addition updated count", updatedCount)
+    } else {
+      const newList = selectedId;
+      newList.splice(newList.indexOf(id), 1)
+      // console.log("new List", newList)
+      setSelectedId(newList);
+      const updatedCount = currentCount-1
+      await updateHabit(id,updatedCount)
+      // console.log("subtraction updated count", updatedCount)
+    }
+  }
 
   const updateSelectedDay = (value) => {
     // console.log("enter here: ", value);
@@ -120,6 +165,7 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
+    console.log("this runs")
     setIsLoading(true)
     const url = "/api/v1/habits";
     const fetchData = async () => {
@@ -137,7 +183,8 @@ const Dashboard = () => {
             let habitObj = {};
             if (y[0] === day) {
               if (y[1] === true) {
-                (habitObj.name = x.name), (habitObj.id = x._id);
+                console.log("current count retrieved from db is ", x.currentCount);
+                (habitObj.name = x.name), (habitObj.id = x._id, habitObj.currentCount = x.currentCount, habitObj.targetCount = x.targetCount);
                 arrayOfHabits.push(habitObj);
               }
             }
@@ -150,10 +197,48 @@ const Dashboard = () => {
       }
     };
     fetchData();
-  }, [selectedDay]);
+  }, [selectedDay, counter]);
 
   // console.log("day:", selectedDay);
   // console.log(habits);
+
+  const renderItem = ({ item }) => {
+    
+    let backgroundColor
+    let tickColor
+    // console.log("index", selectedId.indexOf(item.id));
+    if (selectedId.indexOf(item.id) == -1) {
+      backgroundColor = "#E8E8F7"
+      tickColor = "#FFFFFF"
+    } else {
+      backgroundColor = "#E9E9E9"
+      tickColor = "#27D24C"
+    }
+
+    return (
+      <TouchableOpacity style={[styles.habitsContainer, { backgroundColor: backgroundColor }]} key={item.id} onPress={() => { onPress(item.id, item.currentCount) }}>
+        <View style={styles.percent}>
+          <CircularProgress
+            // percent={20}
+            percent={item.currentCount / item.targetCount * 100}
+            radius={25}
+            textFontSize={12}
+            textFontColor={'white'}
+            textFontWeight={"normal"}
+            overallbg="#FF9F6A"
+            ringColor="white"
+            ringBgColor="#ffc5a6"
+            bgRingWidth={4}
+            progressRingWidth={4}
+          />
+        </View>
+        <Text style={styles.username}> {item.name} </Text>
+        <View style={styles.tick}>
+          <MaterialIcon name="checkbox-marked-circle" size={30} color={tickColor}></MaterialIcon>
+        </View>
+      </TouchableOpacity>
+    )
+  }
 
   return (
     <View style={{ backgroundColor: "white" }}>
@@ -162,12 +247,12 @@ const Dashboard = () => {
           {/* <Avatar.Image size={64} source={{ uri: avatarUrl }}></Avatar.Image> */}
 
           {avatarUrl ? (
-                        <Avatar.Image
-                        size={64} source={{ uri: avatarUrl }}
-                        />
-                    ) : (
-                        <Avatar.Icon style={styles.profilepic} size={64} icon="account" />
-                    )}
+            <Avatar.Image
+              size={64} source={{ uri: avatarUrl }}
+            />
+          ) : (
+            <Avatar.Icon style={styles.profilepic} size={64} icon="account" />
+          )}
 
           <View style={styles.container2}>
             <Text style={styles.welcome}> WELCOME!</Text>
@@ -394,18 +479,42 @@ const Dashboard = () => {
         </View>
         <Text style={styles.personalHabits}>Personal Habits </Text>
         <View style={styles.scrollableContainer}>
-          <ScrollView>
-            {habits.map((x) => {
+          {/* <ScrollView> */}
+          <View style={styles.flatListStuff}>
+            <FlatList style={{marginBottom: "40%"}}
+              data={habits}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id}
+              extraData={[refresh]}
+            >
+            </FlatList>
+          </View>
+          {/* {habits.map((x) => {
               return (
-                <TouchableOpacity style={styles.habitsContainer} key={x.id}>
-                  <View style={styles.habitIcon}>
-                    <Icon name="photo" size={30} color="white"></Icon>
+                <TouchableOpacity style={[styles.habitsContainer,{backgroundColor: isPressed == false ? "#E8E8F7": "#E9E9E9"}]} key={x.id} onPress={onPress}>
+                  <View style={styles.percent}>
+                    <CircularProgress
+                      // percent={20}
+                      percent={x.currentCount / x.targetCount * 100}
+                      radius={25}
+                      textFontSize={12}
+                      textFontColor={'white'}
+                      textFontWeight={"normal"}
+                      overallbg="#FF9F6A"
+                      ringColor="white"
+                      ringBgColor="#ffc5a6"
+                      bgRingWidth={4}
+                      progressRingWidth={4}
+                    />
                   </View>
                   <Text style={styles.username}> {x.name} </Text>
+                  <View style={styles.tick}>
+                    <MaterialIcon name="checkbox-marked-circle" size={30} color="#FFFFFF"></MaterialIcon>
+                  </View>
                 </TouchableOpacity>
               );
-            })}
-          </ScrollView>
+            })} */}
+          {/* </ScrollView> */}
         </View>
       </View>
       {isLoading ? <AnimatedLoader text="Loading..." /> : null}
@@ -425,10 +534,23 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  flatListStuff: {
+    flex: 1,
+    marginTop: StatusBar.currentHeight || 0,
+  },
+  percent: {
+    // flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    // paddingRight: 10,
+    paddingHorizontal: 10,
+  },
+  tick: {
+    marginRight: 20
+  },
   habitsContainer: {
     height: 100,
     width: "100%",
-    backgroundColor: "#E8E8F7",
     borderRadius: 30,
     marginTop: 13,
     flexDirection: "row",
