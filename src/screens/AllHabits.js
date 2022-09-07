@@ -6,30 +6,6 @@ import axiosConn from "../api/config";
 import CircularProgress from "../components/CircularProgress";
 import AnimatedLoader from "../components/AnimatedLoader";
 
-// const DATA = [
-//   {
-//     id: "1",
-//     name: "Total Habits",
-//     arrow: "",
-//     color: "#868AE0",
-//     count: "",
-//   },
-//   {
-//     id: "2",
-//     name: "Completed Habits",
-//     arrow: "  ❯  ",
-//     color: "#78CFBD",
-//     count: "",
-//   },
-//   {
-//     id: "3",
-//     name: "Ongoing Habits",
-//     arrow: "  ❯  ",
-//     color: "#FF9F6A",
-//     count: "",
-//   },
-// ];
-
 const AllHabits = ({ navigation }) => {
 
   const [allHabits, setallHabits] = useState(null);
@@ -115,25 +91,13 @@ const styles = StyleSheet.create({
 
   },
   container1: {
-    // flex: 1,
-    // marginTop: StatusBar.currentHeight || 0,
     alignItems: "center",
   },
   container2: {
-    // flex: 1,
-    // marginTop: StatusBar.currentHeight || 0,
-    // alignItems: "center",
     marginLeft: "8%",
     marginRight: "8%",
-    // marginBottom: "23%",
   },
   item: {
-    // backgroundColor: '#f9c2ff',
-    // padding: 20,
-    // marginVertical: 8,
-    // marginHorizontal: 16,
-    // flexDirection: "row",
-    // padding: 20,
     height: 100,
     width: "100%",
     backgroundColor: "#E8E8F7",
@@ -145,10 +109,6 @@ const styles = StyleSheet.create({
 
   },
   title: {
-    // fontSize: 32,
-    // flex: 1,
-    // width: '50%',
-    // marginTop: 2,
     marginLeft: 10,
     fontWeight: "700",
     fontSize: 20,
@@ -158,30 +118,17 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   count: {
-    // fontSize: 32,
-    // flex: 1,
-    // width: '50%',
-    // marginTop: 2,
-    // marginLeft: 10,
     fontWeight: "700",
     fontSize: 20,
     color: "white",
-    // flex: 1,
-    // flexWrap: "wrap",
-    // marginRight: 10,
-    // textAlign:"center",
-    // textAlignVertical: "center",
   },
   arrow: {
     fontSize: 32,
-    // flex: 1,
-    // width: '50%',
   },
   percent: {
     // flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    // paddingHorizontal: 10,
     width: 60,
     height: 60,
     borderRadius: 20,

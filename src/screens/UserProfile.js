@@ -4,10 +4,7 @@ import {
     Alert,
     StyleSheet,
     Text,
-    TouchableOpacity,
     View,
-    TouchableWithoutFeedback,
-    Keyboard,
     KeyboardAvoidingView,
     ScrollView,
     Image,
@@ -177,9 +174,7 @@ const UserProfile = ({ navigation }) => {
         try {
             setIsLoading(true);
             const s3Url = await uploadImage();
-            //   await console.log("image after uploadImage runs", image);
             const url = "/api/v1/users/profile";
-            //   await console.log("userData after uploadImage runs", userData);
             const response = await axiosConn.put(url, {
                 ...userData,
                 avatarUrl: s3Url,
@@ -201,7 +196,6 @@ const UserProfile = ({ navigation }) => {
             aspect: [1, 1],
             quality: 1,
         });
-        // uploadImage()
         if (!result.cancelled) {
             setImage(result.uri);
         }
@@ -222,14 +216,8 @@ const UserProfile = ({ navigation }) => {
                     "Content-Type": "image/jpeg",
                 },
             });
-            // console.log(JSON.stringify(uploadTos3));
             const s3Url = url.split("?")[0];
             return s3Url;
-            //   await setuserData((prevUserData) => ({
-            //     ...prevUserData,
-            //     avatarUrl: s3Url,
-            //   }));
-            //   await console.log("userdata in uploadImage", userData);
         } catch (error) {
             console.log(error);
         }
@@ -251,7 +239,6 @@ const UserProfile = ({ navigation }) => {
             >
                 <View style={styles.profilecontainer}>
                     <BackButton goBack={checkchanged} />
-                    {/* <BackButton goBack={navigation.goBack} /> */}
                     <IconButton
                         style={styles.editbtn}
                         icon="pencil-outline"
@@ -276,8 +263,6 @@ const UserProfile = ({ navigation }) => {
                         style={styles.camerabtn}
                         icon="camera"
                         color="#fff"
-                        // iconColor= "red"
-                        // containerColor="#110580"
                         size={22}
                         onPress={() => {
                             pickImage();
@@ -357,9 +342,6 @@ const UserProfile = ({ navigation }) => {
                             >
                                 Update
                             </Button>
-                            {/* <Button style={{ marginTop: 30 }} onPress={showModal}>
-                                Show
-                            </Button> */}
                         </View>
                     </ScrollView>
                     <Portal>

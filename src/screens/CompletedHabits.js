@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
   View,
-  Image,
   FlatList,
   SafeAreaView,
   StatusBar,
@@ -10,7 +9,6 @@ import {
   TouchableOpacity,
 } from "react-native";
 import BackButton from "../components/loginBackButton";
-import Header from "../components/loginHeader";
 import axiosConn from "../api/config";
 import CircularProgress from "../components/CircularProgress";
 import AnimatedLoader from "../components/AnimatedLoader";
@@ -26,8 +24,6 @@ const CompletedHabits = ({ navigation }) => {
       try {
         const response = await axiosConn.get(url);
         const habits = response.data.data;
-        // const Ongoingh = habits.filter(x => Date.parse(x.createdAt) < new Date());
-        // setHabits(Ongoingh);
         const Completedh = habits.filter(
           (x) => Date.parse(x.createdAt) > new Date()
         );
@@ -49,7 +45,6 @@ const CompletedHabits = ({ navigation }) => {
     >
       <View style={styles.percent}>
         <CircularProgress
-          // percent={20}
           percent={(item.currentCount / item.targetCount) * 100}
           radius={25}
           textFontSize={12}
@@ -71,7 +66,7 @@ const CompletedHabits = ({ navigation }) => {
       // Flat List Item
       <TouchableOpacity
         style={styles.item}
-        onPress={() => navigation.navigate("Plus")}
+        onPress={() => navigation.navigate("Base", { screen: "Plus" })}
       >
         <Text style={styles.title}>
           Nothing yet... 😔{"\n"}Create another Habits?
@@ -87,7 +82,6 @@ const CompletedHabits = ({ navigation }) => {
         <BackButton
           goBack={() => navigation.replace("Base", { screen: "Schedule" })}
         />
-        {/* <BackButton goBack={navigation.goBack} /> */}
         <Text style={styles.header}>Completed Habits</Text>
       </View>
       <View style={styles.container2}>
@@ -110,26 +104,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   container1: {
-    // flex: 1,
-    // marginTop: StatusBar.currentHeight || 0,
     alignItems: "center",
   },
   container2: {
-    // flex: 1,
-    // marginTop: StatusBar.currentHeight || 0,
-    // alignItems: "center",
     marginLeft: "8%",
     marginRight: "8%",
     marginBottom: "23%",
   },
   item: {
-    // backgroundColor: '#f9c2ff',
-    // padding: 20,
-    // marginVertical: 8,
-    // marginHorizontal: 16,
-    // flexDirection: "row",
-    // padding: 20,
-
     height: 100,
     width: "100%",
     backgroundColor: "#E8E8F7",
@@ -140,10 +122,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    // fontSize: 32,
-    // flex: 1,
-    // width: '50%',
-    // marginTop: 2,
     marginLeft: 10,
     fontWeight: "700",
     fontSize: 20,
@@ -153,10 +131,8 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   percent: {
-    // flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    // paddingRight: 10,
     paddingHorizontal: 10,
   },
   header: {
@@ -165,12 +141,9 @@ const styles = StyleSheet.create({
     fontFamily: "roboto-bold",
     paddingBottom: Platform.OS === "ios" ? "2%" : "4%",
     paddingTop: Platform.OS === "ios" ? "2%" : "7%",
-    // paddingHorizontal: (Platform.OS === 'ios') ? 0 : "15%",
   },
   arrow: {
     fontSize: 32,
-    // flex: 1,
-    // width: '50%',
   },
 });
 
