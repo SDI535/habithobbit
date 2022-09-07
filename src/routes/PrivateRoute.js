@@ -3,6 +3,7 @@ import DashboardScreen from "../screens/Dashboard";
 import Icon from "react-native-vector-icons/AntDesign";
 import { StyleSheet, Text, View } from "react-native";
 import CreateHabit from "../screens/CreateHabit";
+import HabitsActivityFeed from "../screens/HabitsActivityFeed";
 import UserProfile from "../screens/UserProfile";
 import { createStackNavigator } from "@react-navigation/stack";
 const Stack = createStackNavigator();
@@ -40,7 +41,7 @@ const Tabs = () => {
       />
       <Tab.Screen
         name="Team"
-        component={AllHabits}
+        component={HabitsActivityFeed}
         options={{
           tabBarIcon: ({ focused, color }) => (
             <Icon name="team" size={26} color={color}></Icon>
@@ -63,7 +64,7 @@ const Tabs = () => {
       />
       <Tab.Screen
         name="Schedule"
-        component={DashboardScreen}
+        component={AllHabits}
         options={{
           tabBarIcon: ({ focused, color }) => (
             <Icon name="calendar" size={26} color={color}></Icon>
@@ -72,9 +73,11 @@ const Tabs = () => {
       />
       <Tab.Screen
         name="User"
+
         component={UserProfile}
         options={{
           tabBarStyle: { display: 'none' },
+
           tabBarIcon: ({ focused, color }) => (
             <Icon name="user" size={26} color={color}></Icon>
           ),
@@ -83,6 +86,8 @@ const Tabs = () => {
     </Tab.Navigator>
   );
 };
+
+
 
 const PrivateRoute = () => {
   return (
