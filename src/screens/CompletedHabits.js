@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { View, Image, FlatList, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity } from "react-native";
+import {
+  View,
+  Image,
+  FlatList,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import BackButton from "../components/loginBackButton";
 import Header from "../components/loginHeader";
 import axiosConn from "../api/config";
@@ -7,10 +16,9 @@ import CircularProgress from "../components/CircularProgress";
 import AnimatedLoader from "../components/AnimatedLoader";
 
 const CompletedHabits = ({ navigation }) => {
-
   const [Habits, setHabits] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   useEffect(() => {
     setIsLoading(true);
     const url = "/api/v1/habits";
@@ -20,7 +28,9 @@ const CompletedHabits = ({ navigation }) => {
         const habits = response.data.data;
         // const Ongoingh = habits.filter(x => Date.parse(x.createdAt) < new Date());
         // setHabits(Ongoingh);
-        const Completedh = habits.filter(x => Date.parse(x.createdAt) > new Date());
+        const Completedh = habits.filter(
+          (x) => Date.parse(x.createdAt) > new Date()
+        );
         setHabits(Completedh);
         setIsLoading(false);
       } catch (error) {
@@ -30,16 +40,20 @@ const CompletedHabits = ({ navigation }) => {
     fetchData();
   }, []);
 
-
   const renderItem = ({ item }) => (
-    <TouchableOpacity style={styles.item} onPress={() => navigation.navigate("ViewHabit", { exampleHabit: item._id })}>
+    <TouchableOpacity
+      style={styles.item}
+      onPress={() =>
+        navigation.navigate("ViewHabit", { exampleHabit: item._id })
+      }
+    >
       <View style={styles.percent}>
         <CircularProgress
           // percent={20}
-          percent={item.currentCount / item.targetCount * 100}
+          percent={(item.currentCount / item.targetCount) * 100}
           radius={25}
           textFontSize={12}
-          textFontColor={'white'}
+          textFontColor={"white"}
           textFontWeight={"normal"}
           overallbg="#78CFBD"
           ringColor="white"
@@ -49,15 +63,20 @@ const CompletedHabits = ({ navigation }) => {
         />
       </View>
       <Text style={styles.title}>{item.name}</Text>
-      </TouchableOpacity>
+    </TouchableOpacity>
   );
 
   const EmptyListMessage = ({ item }) => {
     return (
       // Flat List Item
-      <TouchableOpacity style={styles.item} onPress={() => navigation.navigate("Plus")}>
-      <Text style={styles.title}>Nothing yet... 😔{"\n"}Create another Habits?</Text>
-      <Text style={styles.arrow}>  ❯  </Text>
+      <TouchableOpacity
+        style={styles.item}
+        onPress={() => navigation.navigate("Plus")}
+      >
+        <Text style={styles.title}>
+          Nothing yet... 😔{"\n"}Create another Habits?
+        </Text>
+        <Text style={styles.arrow}> ❯ </Text>
       </TouchableOpacity>
     );
   };
@@ -65,7 +84,9 @@ const CompletedHabits = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container1}>
-      <BackButton goBack={() => navigation.replace("Base", { screen: "Team" })} />
+        <BackButton
+          goBack={() => navigation.replace("Base", { screen: "Schedule" })}
+        />
         {/* <BackButton goBack={navigation.goBack} /> */}
         <Text style={styles.header}>Completed Habits</Text>
       </View>
@@ -73,7 +94,7 @@ const CompletedHabits = ({ navigation }) => {
         <FlatList
           data={Habits}
           renderItem={renderItem}
-          keyExtractor={item => item._id}
+          keyExtractor={(item) => item._id}
           ListEmptyComponent={EmptyListMessage}
         />
       </View>
@@ -87,9 +108,6 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: StatusBar.currentHeight || 0,
     backgroundColor: "#fff",
-
-
-
   },
   container1: {
     // flex: 1,
@@ -120,7 +138,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flex: 1,
     alignItems: "center",
-
   },
   title: {
     // fontSize: 32,
@@ -146,8 +163,8 @@ const styles = StyleSheet.create({
     fontSize: 32,
     color: "#110580",
     fontFamily: "roboto-bold",
-    paddingBottom: (Platform.OS === 'ios') ? "2%" : "4%",
-    paddingTop: (Platform.OS === 'ios') ? "2%" : "7%",
+    paddingBottom: Platform.OS === "ios" ? "2%" : "4%",
+    paddingTop: Platform.OS === "ios" ? "2%" : "7%",
     // paddingHorizontal: (Platform.OS === 'ios') ? 0 : "15%",
   },
   arrow: {
@@ -158,40 +175,3 @@ const styles = StyleSheet.create({
 });
 
 export default CompletedHabits;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
