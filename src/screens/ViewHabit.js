@@ -20,6 +20,7 @@ import moment from "moment";
 import AnimatedLoader from "../components/AnimatedLoader";
 import { IconButton, Modal, Portal, Provider } from "react-native-paper";
 import Button from "../components/loginButton";
+import { EditHabit } from "./EditHabit";
 
 
 const ViewHabit = ({ route, navigation }) => {
@@ -35,6 +36,7 @@ const ViewHabit = ({ route, navigation }) => {
     const [dates, setDates] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const [visible, setVisible] = useState(false);
+    const [masterHabit, setMasterHabit] = useState({});
 
     const showModal = () => setVisible(true);
     const hideModal = () => setVisible(false);
@@ -63,6 +65,7 @@ const ViewHabit = ({ route, navigation }) => {
             try {
                 const response = await axiosConn.get(url);
                 const endDate = response.data.data.endDate;
+                setMasterHabit(response.data.data);
                 setHabitDesc(response.data.data.description);
                 setHabitName(response.data.data.name);
                 setIsLoading(false);
@@ -179,7 +182,10 @@ const ViewHabit = ({ route, navigation }) => {
                     <AntDesign
                         name="edit"
                         size={20}
-                        style={{ marginLeft: "3%" }}>
+                        style={{ marginLeft: "3%" }}
+                        onPress={() => {navigation.navigate("EditHabit", {
+                            masterHabit: masterHabit
+                        })}} >
                     </AntDesign>
                 </TouchableOpacity>
             </View>
