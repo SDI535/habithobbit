@@ -24,7 +24,7 @@ const Tabs = () => {
           borderTopWidth: 0,
           justifyContent: "center",
           alignItems: "center",
-          height: "10%" 
+          height: "10%"
         },
         tabBarShowLabel: false,
         tabBarActiveTintColor: "#110580",

@@ -112,7 +112,7 @@ const HabitsActivityFeed = () => {
         setFilteredHabits(result);
 
         setIsLikePressed((prev) => !prev);
-        Alert.alert("You unlike a habit!");
+        // Alert.alert("You unlike a habit!");
       }
     } catch (error) {
       console.log(error);
@@ -136,7 +136,7 @@ const HabitsActivityFeed = () => {
         setFilteredHabits(result);
 
         setIsLikePressed((prev) => !prev);
-        Alert.alert("You like a habit!");
+        // Alert.alert("You like a habit!");
       }
     } catch (error) {
       console.log(error);
@@ -163,7 +163,7 @@ const HabitsActivityFeed = () => {
           flex: 1,
         }}
       >
-        <View style={{ flex: 1, flexDirection: "row" }}>
+        <View style={{ flex: 1, flexDirection: "row", paddingLeft: "1%"}}>
           {avatarUrl ? (
             <Avatar.Image size={40} source={{ uri: avatarUrl }} />
           ) : (
@@ -171,14 +171,14 @@ const HabitsActivityFeed = () => {
               size={40}
               icon="account-outline"
               color="#ffffff"
-              style={{ backgroundColor: "#868AE0" }}
+              style={{ backgroundColor: "#868AE0"}}
             />
           )}
 
-          <View style={{ flex: 1, paddingHorizontal: 10 }}>
+          <View style={{ flex: 1, paddingHorizontal: 10, paddingTop: "2.5%" }}>
             <Text style={{ color: "#4E53BA", fontSize: 18, lineHeight: 16 }}>
               {item.user.username}
-              {loginUserId === item.user._id ? "(You)" : null}
+              {loginUserId === item.user._id ? " (You)" : null}
             </Text>
             <Text
               style={{
@@ -189,10 +189,10 @@ const HabitsActivityFeed = () => {
               }}
             >{`created ${daysFromNow}`}</Text>
           </View>
-          <View>
+          <View style={{marginTop: "-2%"}}>
             {item.likes.includes(loginUserId) ? (
               <IconButton
-                size={22}
+                size={24}
                 icon="heart"
                 color="red"
                 animated={true}
@@ -201,7 +201,7 @@ const HabitsActivityFeed = () => {
               />
             ) : (
               <IconButton
-                size={22}
+                size={24}
                 icon="heart-outline"
                 color="#000000"
                 rippleColor="rgba(255,0,0,0.5)"
@@ -211,14 +211,17 @@ const HabitsActivityFeed = () => {
             <Text
               style={{
                 color: "#4E53BA",
-                fontSize: 12,
+                fontSize: 10,
                 lineHeight: 16,
                 fontFamily: "roboto-medium",
+                marginTop: "90%",
+                marginLeft: "20%",
+                position: "absolute",
               }}
             >{`${likesCount} likes`}</Text>
           </View>
         </View>
-        <View style={{ flex: 1, paddingLeft: 20 }}>
+        <View style={{ flex: 1, paddingLeft: "2%", paddingTop: "6%" }}>
           <Text
             numberOfLines={1}
             style={{
@@ -253,12 +256,21 @@ const HabitsActivityFeed = () => {
           height: 250,
           alignItems: "stretch",
           paddingHorizontal: 30,
+          marginTop: (Platform.OS === 'ios') ? 0 : "8%"
         }}
       >
         {showSearchBar ? (
           <TextInput
-            style={{ width: "85%", backgroundColor: "transparent" }}
+            style={{ 
+              width: "90%", 
+              backgroundColor: "transparent",
+              height:(Platform.OS === 'ios') ? 0 : 25,
+              paddingTop: (Platform.OS === 'ios') ? 0 : "2%",
+              paddingBottom: (Platform.OS === 'ios') ? 0 : "10%",
+              
+            }}
             mode="outlined"
+            theme={{roundness:50}}
             placeholder="Search habit..."
             outlineColor="#878585"
             activeOutlineColor="#110580"
@@ -285,6 +297,7 @@ const HabitsActivityFeed = () => {
           fontSize: 32,
           color: "#110580",
           alignSelf: "center",
+          paddingTop: (Platform.OS === 'ios') ? "5%" : "8%"
         }}
       >
         Activity Feed{" "}

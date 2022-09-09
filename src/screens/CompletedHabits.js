@@ -78,10 +78,13 @@ const CompletedHabits = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.container1}>
-        <BackButton
+      <BackButton
           goBack={() => navigation.replace("Base", { screen: "Schedule" })}
         />
+      <View style={styles.container1}>
+        {/* <BackButton
+          goBack={() => navigation.replace("Base", { screen: "Schedule" })}
+        /> */}
         <Text style={styles.header}>Completed Habits</Text>
       </View>
       <View style={styles.container2}>
@@ -100,11 +103,13 @@ const CompletedHabits = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    // marginTop: StatusBar.currentHeight || 0,
     backgroundColor: "#fff",
   },
   container1: {
     alignItems: "center",
+    alignSelf: "center",
+    width: "85%"
   },
   container2: {
     marginLeft: "8%",
@@ -124,11 +129,12 @@ const styles = StyleSheet.create({
   title: {
     marginLeft: 10,
     fontWeight: "700",
-    fontSize: 20,
+    fontSize: 18,
     color: "#110580",
     flex: 1,
     flexWrap: "wrap",
     marginRight: 10,
+    paddingLeft: "5%"
   },
   percent: {
     alignItems: "center",
@@ -143,7 +149,9 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === "ios" ? "2%" : "7%",
   },
   arrow: {
-    fontSize: 32,
+    fontSize: (Platform.OS === 'ios') ? 38 : 32,
+    color: "#868AE0",
+    paddingRight: "4%"
   },
 });
 

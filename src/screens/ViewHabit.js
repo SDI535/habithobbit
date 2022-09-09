@@ -169,29 +169,32 @@ const ViewHabit = ({ route, navigation }) => {
             <TouchableOpacity style={styles.trashcan} onPress={showModal}>
                 <FontAwesome
                     name="trash-o"
-                    size={20}
+                    size={18}
+                    style={{color: "#878585"}}
                 >
                 </FontAwesome>
             </TouchableOpacity>
             <View style={styles.viewHabit}>
                 <Text style={styles.topHeader}>{habitName}</Text>
-                <TouchableOpacity style={{ marginLeft: "3%" }}>
+                <TouchableOpacity style={{ marginLeft: "1%", marginTop: "1%" }}>
                     <AntDesign
                         name="edit"
                         size={20}
-                        style={{ marginLeft: "3%" }}>
+                        style={{ marginLeft: "2%", color: "#110580" }}>
                     </AntDesign>
                 </TouchableOpacity>
             </View>
             <Calendar
                 style={{
-                    width: 300,
+                    width: 330,
                     marginLeft: "5%",
                     marginRight: "5%",
                     borderColor: "#878585",
-                    borderWidth: 1,
+                    borderWidth: 0.4,
                     borderRadius: 20,
-                    minHeight: 320
+                    minHeight: 320,
+                    paddingVertical: 10,
+                    marginTop: (Platform.OS === 'ios') ? "5%" : "2%"
 
                 }}
                 markedDates={
@@ -221,10 +224,10 @@ const ViewHabit = ({ route, navigation }) => {
                     onDismiss={hideModal}
                     contentContainerStyle={containerStyle}
                 >
-                    <Image source={require("../assets/Wait.png")} />
+                    <Image source={require("../assets/cry.png")} />
                     <Text style={styles.popheader}>W...Wait!</Text>
                     <Text style={styles.popTxt}>
-                        Are you sure you want to delete this habits?
+                        Are you sure you want to delete this habit?
                     </Text>
                     <View style={{ flexDirection: "row" }}>
                         <Button style={styles.buttonNot} onPress={hideModal}>

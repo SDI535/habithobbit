@@ -6,7 +6,8 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ScrollView,
-  StatusBar
+  StatusBar,
+  Dimensions
 } from "react-native";
 import { Directions, FlatList } from "react-native-gesture-handler";
 import { Avatar, Colors } from "react-native-paper";
@@ -18,6 +19,8 @@ import { getUser } from "../utils/securestore.utils";
 import { AuthContext } from "../contexts/AuthContext";
 import AnimatedLoader from "../components/AnimatedLoader";
 import CircularProgress from "../components/CircularProgress";
+
+const windowHeight = Dimensions.get("window").height;
 
 const getCurrentDate = () => {
   let day = new Date().getDate();
@@ -67,6 +70,7 @@ const getDayNumber = () => {
 };
 
 const Dashboard = () => {
+
   const [userName, setUsername] = useState("Username");
   const [avatarUrl, setAvatarUrl] = useState("");
   const [habits, setHabits] = useState([]);
@@ -481,14 +485,16 @@ const Dashboard = () => {
         <View style={styles.scrollableContainer}>
           {/* <ScrollView> */}
           <View style={styles.flatListStuff}>
-            <FlatList style={{marginBottom: "40%"}}
+            <FlatList
               data={habits}
               renderItem={renderItem}
               keyExtractor={(item) => item.id}
               extraData={[refresh]}
             >
             </FlatList>
+            {/* <View style={styles.emptyBox}/> */}
           </View>
+          <View style={styles.emptyBox}/>
           {/* {habits.map((x) => {
               return (
                 <TouchableOpacity style={[styles.habitsContainer,{backgroundColor: isPressed == false ? "#E8E8F7": "#E9E9E9"}]} key={x.id} onPress={onPress}>
@@ -535,15 +541,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   flatListStuff: {
+    maxHeight: windowHeight/1.5,
     flex: 1,
     marginTop: StatusBar.currentHeight || 0,
+    // marginTop: "5%",
+    marginBottom: "1%",
   },
   percent: {
     // flex: 1,
     alignItems: "center",
     justifyContent: "center",
     // paddingRight: 10,
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
+    paddingLeft: "6%",
+    paddingRight: "2%"
   },
   tick: {
     marginRight: 20
@@ -559,7 +570,7 @@ const styles = StyleSheet.create({
   },
   scrollableContainer: {
     height: "71%",
-    paddingTop: 15,
+    paddingTop: (Platform.OS === 'ios') ? "5%" : 0,
   },
   generalFontTitle: {
     color: "#4E53BA",
@@ -653,4 +664,9 @@ const styles = StyleSheet.create({
     marginRight: "8%",
     marginBottom: "15%",
   },
+  emptyBox: {
+    width: "100%",
+    height: (Platform.OS === 'ios') ? 0 : "13%",
+    backgroundColor: "white",
+  }
 });

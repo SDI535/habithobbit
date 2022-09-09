@@ -68,7 +68,7 @@ const OngoingHabits = ({ navigation }) => {
         style={styles.item}
         onPress={() => navigation.navigate("Base", { screen: "Plus" })}
       >
-        <Text style={styles.title}>Start a new Habit!😊{"\n"}Create now!</Text>
+        <Text style={styles.title2}>Start a new Habit!😊{"\n"}Create now!</Text>
         <Text style={styles.arrow}> ❯ </Text>
       </TouchableOpacity>
     );
@@ -76,10 +76,13 @@ const OngoingHabits = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.container1}>
-        <BackButton
+      <BackButton
           goBack={() => navigation.replace("Base", { screen: "Schedule" })}
-        />
+      />
+      <View style={styles.container1}>
+        {/* <BackButton
+          goBack={() => navigation.replace("Base", { screen: "Schedule" })}
+        /> */}
         <Text style={styles.header}>Ongoing Habits</Text>
       </View>
       <View style={styles.container2}>
@@ -98,16 +101,19 @@ const OngoingHabits = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    // marginTop: StatusBar.currentHeight || 0,
     backgroundColor: "#fff",
   },
   container1: {
     alignItems: "center",
+    alignSelf: "center",
+    width: "85%"
   },
   container2: {
     marginLeft: "8%",
     marginRight: "8%",
-    marginBottom: "23%",
+    marginTop: (Platform.OS === 'ios') ? "3%" : "2%",
+    marginBottom: (Platform.OS === 'ios') ? "12%" : "25%",
   },
   item: {
     height: 100,
@@ -123,15 +129,26 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontWeight: "700",
     fontSize: 20,
-    color: "#110580",
+    color: "#4E53BA",
     flex: 1,
     flexWrap: "wrap",
     marginRight: 10,
   },
+  title2: {
+    marginLeft: 10,
+    fontWeight: "700",
+    fontSize: 20,
+    color: "#4E53BA",
+    flex: 1,
+    flexWrap: "wrap",
+    marginRight: 10,
+    paddingLeft: "5%"
+  },
   percent: {
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 10,
+    paddingLeft: "6%",
+    paddingRight: "2%"
   },
   header: {
     fontSize: 32,
@@ -141,7 +158,9 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === "ios" ? "2%" : "7%",
   },
   arrow: {
-    fontSize: 32,
+    fontSize: (Platform.OS === 'ios') ? 38 : 32,
+    color: "#868AE0",
+    paddingRight: "4%"
   },
 });
 
