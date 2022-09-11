@@ -42,24 +42,24 @@ const EditHabit = ({ route, navigation }) => {
     private: false,
   });
 
-  const [originalData, setOriginalData] = useState({
-    name: "",
-    description: "",
-    frequency: {
-      repeat: "daily",
-      mon: true,
-      tues: true,
-      wed: true,
-      thurs: true,
-      fri: true,
-      sat: true,
-      sun: true,
-    },
-    endDate: "",
-    targetCount: 0,
-    currentCount: 0,
-    private: false,
-  });
+  // const [originalData, setOriginalData] = useState({
+  //   name: "",
+  //   description: "",
+  //   frequency: {
+  //     repeat: "daily",
+  //     mon: true,
+  //     tues: true,
+  //     wed: true,
+  //     thurs: true,
+  //     fri: true,
+  //     sat: true,
+  //     sun: true,
+  //   },
+  //   endDate: "",
+  //   targetCount: 0,
+  //   currentCount: 0,
+  //   private: false,
+  // });
 
   const [habit, setHabit] = useState(masterHabit.name);
   const [habitDesc, setHabitDesc] = useState(masterHabit.description);
@@ -84,59 +84,46 @@ const EditHabit = ({ route, navigation }) => {
   const prettyDate = moment(endDate).format("DD MMMM YYYY");
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
+  const onTogglePrivacy = () => setIsPrivacyOn(!isPrivacyOn);
   const [isPrivacyOn, setIsPrivacyOn] = useState(masterHabit.private);
   const createdAt = "";
   const [unchanged, setunchanged] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [isUpdated, setIsUpdated] = useState(false);
+  const [masterHabitl, setMasterHabitl] = useState(masterHabit);
 
   console.log(masterHabit);
-  //console.log("thurs?", masterHabit.frequency[0].thurs);
-
+  console.log("End date:", endDate);
   
-  // () => {
-  //   if (masterHabit.frequency[0].repeat == "daily") {
-  //     setDayValue.push([1,2,3,4,5,6,7])
-  //     console.log("masterHabit frequency", masterHabit.frequency[0]);
-  //   } else if (masterHabit.frequency[0].repeat == "weekly") {
-  //     console.log("masterHabit frequency", masterHabit.frequency[0]);
-  //   }
-  //   return;
-  // }
-  //dayArray();
-
-
-  //       if (nFreqValue[0].repeat == "daily") {
-  //         setDayValue([1, 2, 3, 4, 5, 6, 7]);
-  //       } else if (nFreqValue[0].repeat == "weekly") {
-  //         if (nDayValue[0].mon == true) {
-  //           setDayValue(1);
-  //         }
-  //         if (nDayValue[0].tues == true) {
-  //           setDayValue(2);
-  //         }
-  //         if (nDayValue[0].wed == true) {
-  //           setDayValue(3);
-  //         }
-  //         if (nDayValue[0].thurs == true) {
-  //           setDayValue(4);
-  //         }
-  //         if (nDayValue[0].fri == true) {
-  //           setDayValue(5);
-  //         }
-  //         if (nDayValue[0].sat == true) {
-  //           setDayValue(6);
-  //         }
-  //         if (nDayValue[0].sun == true) {
-  //           setDayValue(7);
-  //         }
-  //       }
-  //       setEndDate(moment(nEndDate).local().format("DD MMMM YYYY"))
-  //       if (nPrivacy === true) {
-  //         setIsPrivacyOn(true)
-  //       } else {
-  //         setIsPrivacyOn(false)
-  //       }
-
+  useEffect (() => {
+    let arrayList = [];
+    if (masterHabit.frequency[0].repeat == "daily") {
+      arrayList = [1,2,3,4,5,6,7];
+    } else if (masterHabit.frequency[0].repeat == "weekly") {
+      if (masterHabit.frequency[0].mon == true) {
+        arrayList.push(1)
+      } 
+      if (masterHabit.frequency[0].tues == true) {
+        arrayList.push(2)
+      } 
+      if (masterHabit.frequency[0].wed == true) {
+        arrayList.push(3)
+      } 
+      if (masterHabit.frequency[0].thurs == true) {
+        arrayList.push(4)
+      } 
+      if (masterHabit.frequency[0].fri == true) {
+        arrayList.push(5)
+      } 
+      if (masterHabit.frequency[0].sat == true) {
+        arrayList.push(6)
+      } 
+      if (masterHabit.frequency[0].sun == true) {
+        arrayList.push(7)
+      }
+    }
+    setDayValue(arrayList);
+  }, []) 
 
   useEffect(() => {
     const prepare = () => {
@@ -174,8 +161,11 @@ const EditHabit = ({ route, navigation }) => {
         Alert.alert("SUCCESS", "Habit is updated!", [{ text: "Ok" }]);
       } 
       masterHabit = response.data.data;
+      //console.log("Inside save edit habit:", masterHabit);
+      setMasterHabitl(response.data.data);
       setIsLoading(false);
-      setunchanged(true);
+      setIsUpdated(true);
+      //setunchanged(true);
     } catch (error) {
       //Alert.alert("Plese enter a habit");
       //habitInputError();
@@ -190,9 +180,9 @@ const EditHabit = ({ route, navigation }) => {
       setShow(false);
     }
     if (event.type === "neutralButtonPressed") {
-      setEndDate(new Date(0));
-    } else {
       setEndDate(currentDate);
+    } else {
+      setEndDate(selectedDate);
     }
   };
 
@@ -228,9 +218,6 @@ const EditHabit = ({ route, navigation }) => {
     return totalCount;
 
   };
-
-  //Privacy setting
-  const onTogglePrivacy = () => setIsPrivacyOn(!isPrivacyOn);
 
   // //Habit input validator
   // const [habitCreate, setHabitCreate] = useState({habit: ""});
@@ -355,7 +342,7 @@ const EditHabit = ({ route, navigation }) => {
           {show && (
             <DateTimePicker
               style={{ width: "100%" }}
-              value={endDate}
+              value={new Date()}
               mode={mode}
               is24Hour={true}
               onChange={changeDate}
@@ -385,7 +372,7 @@ const EditHabit = ({ route, navigation }) => {
               saveEditHabit();
               navigation.navigate({
                 name: 'ViewHabit',
-                params: { put : masterHabit },
+                params: { isUpdated : masterHabitl },
                 merge: true,
               });
             }}
