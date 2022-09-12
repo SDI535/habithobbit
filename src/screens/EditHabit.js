@@ -342,7 +342,7 @@ const EditHabit = ({ route, navigation }) => {
           {show && (
             <DateTimePicker
               style={{ width: "100%" }}
-              value={new Date()}
+              value={moment(endDate).toDate()}
               mode={mode}
               is24Hour={true}
               onChange={changeDate}
@@ -370,11 +370,11 @@ const EditHabit = ({ route, navigation }) => {
             style={styles.button}
             onPress={() => {
               saveEditHabit();
-              navigation.navigate({
-                name: 'ViewHabit',
-                params: { isUpdated : masterHabitl },
-                merge: true,
-              });
+              // navigation.navigate({
+              //   name: 'ViewHabit',
+              //   params: { isUpdated : masterHabitl },
+              //   merge: true,
+              // });
             }}
           >
             Save

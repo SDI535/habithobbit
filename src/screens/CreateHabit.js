@@ -41,7 +41,6 @@ const CreateHabit = ({ navigation }) => {
   });
   const [habit, setHabit] = useState(null);
   const [habitDesc, setHabitDesc] = useState(null);
-
   const [openFreq, setOpenFreq] = useState(false);
   const [freqValue, setFreqValue] = useState("weekly");
   const [freq, setFreq] = useState([
