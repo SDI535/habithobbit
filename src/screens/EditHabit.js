@@ -21,7 +21,6 @@ import moment from "moment";
 import AnimatedLoader from "../components/AnimatedLoader";
 
 const EditHabit = ({ route, navigation }) => {
-
   let { masterHabit } = route.params;
   const [habitData, setHabitData] = useState({
     name: "",
@@ -94,36 +93,36 @@ const EditHabit = ({ route, navigation }) => {
 
   console.log(masterHabit);
   console.log("End date:", endDate);
-  
-  useEffect (() => {
+
+  useEffect(() => {
     let arrayList = [];
     if (masterHabit.frequency[0].repeat == "daily") {
-      arrayList = [1,2,3,4,5,6,7];
+      arrayList = [1, 2, 3, 4, 5, 6, 7];
     } else if (masterHabit.frequency[0].repeat == "weekly") {
       if (masterHabit.frequency[0].mon == true) {
-        arrayList.push(1)
-      } 
+        arrayList.push(1);
+      }
       if (masterHabit.frequency[0].tues == true) {
-        arrayList.push(2)
-      } 
+        arrayList.push(2);
+      }
       if (masterHabit.frequency[0].wed == true) {
-        arrayList.push(3)
-      } 
+        arrayList.push(3);
+      }
       if (masterHabit.frequency[0].thurs == true) {
-        arrayList.push(4)
-      } 
+        arrayList.push(4);
+      }
       if (masterHabit.frequency[0].fri == true) {
-        arrayList.push(5)
-      } 
+        arrayList.push(5);
+      }
       if (masterHabit.frequency[0].sat == true) {
-        arrayList.push(6)
-      } 
+        arrayList.push(6);
+      }
       if (masterHabit.frequency[0].sun == true) {
-        arrayList.push(7)
+        arrayList.push(7);
       }
     }
     setDayValue(arrayList);
-  }, []) 
+  }, []);
 
   useEffect(() => {
     const prepare = () => {
@@ -146,20 +145,21 @@ const EditHabit = ({ route, navigation }) => {
         private: isPrivacyOn,
       }));
     };
-  //   const checkk = () => {
-  //     setunchanged(Boolean(habitData === originalData));
-  // };
-      prepare();
-  //  checkk();
+    //   const checkk = () => {
+    //     setunchanged(Boolean(habitData === originalData));
+    // };
+    prepare();
+    //  checkk();
   }, [habit, habitDesc, freqValue, dayValue, endDate, isPrivacyOn]);
 
   const saveEditHabit = async () => {
     try {
+      setIsLoading(true);
       const url = `/api/v1/habits/${masterHabit._id}`;
       const response = await axiosConn.put(url, habitData);
       if (response) {
         Alert.alert("SUCCESS", "Habit is updated!", [{ text: "Ok" }]);
-      } 
+      }
       masterHabit = response.data.data;
       //console.log("Inside save edit habit:", masterHabit);
       setMasterHabitl(response.data.data);
@@ -216,7 +216,6 @@ const EditHabit = ({ route, navigation }) => {
       console.log(totalCount);
     }
     return totalCount;
-
   };
 
   // //Habit input validator
@@ -352,13 +351,13 @@ const EditHabit = ({ route, navigation }) => {
 
           <Text style={styles.headerTxt}>Habit Privacy</Text>
           <View style={styles.privacyContainer}>
-            <Text style={{ color: "#4E53BA", fontWeight: "bold"}}>
+            <Text style={{ color: "#4E53BA", fontWeight: "bold" }}>
               Private
             </Text>
             <Switch
               style={{ color: "black" }}
               value={isPrivacyOn}
-              onValueChange={onTogglePrivacy} 
+              onValueChange={onTogglePrivacy}
               trackColor={{ true: "#4E53BA" }}
             />
           </View>
