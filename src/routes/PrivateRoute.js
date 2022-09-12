@@ -13,6 +13,7 @@ import AllHabits from "../screens/AllHabits";
 import CompletedHabits from "../screens/CompletedHabits";
 import OngoingHabits from "../screens/OngoingHabits";
 import ViewHabit from "../screens/ViewHabit";
+import EditHabit from "../screens/EditHabit";
 
 const Tabs = () => {
   return (
@@ -102,6 +103,7 @@ const PrivateRoute = () => {
       <Stack.Screen name="OngoingHabits" component={OngoingHabits} />
       <Stack.Screen name="CompletedHabits" component={CompletedHabits} />
       <Stack.Screen name="ViewHabit" component={ViewHabit} />
+      <Stack.Screen name="EditHabit" component={EditHabit} />
     </Stack.Navigator>
   );
 };
