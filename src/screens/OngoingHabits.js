@@ -45,7 +45,7 @@ const OngoingHabits = ({ navigation }) => {
     >
       <View style={styles.percent}>
         <CircularProgress
-          percent={(item.currentCount / item.targetCount) * 100}
+          percent={Math.round((item.currentCount / item.targetCount) * 100)}
           radius={25}
           textFontSize={12}
           textFontColor={"white"}
@@ -77,7 +77,7 @@ const OngoingHabits = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <BackButton
-          goBack={() => navigation.replace("Base", { screen: "Schedule" })}
+        goBack={() => navigation.replace("Base", { screen: "Schedule" })}
       />
       <View style={styles.container1}>
         {/* <BackButton
@@ -107,13 +107,13 @@ const styles = StyleSheet.create({
   container1: {
     alignItems: "center",
     alignSelf: "center",
-    width: "85%"
+    width: "85%",
   },
   container2: {
     marginLeft: "8%",
     marginRight: "8%",
-    marginTop: (Platform.OS === 'ios') ? "3%" : "2%",
-    marginBottom: (Platform.OS === 'ios') ? "12%" : "25%",
+    marginTop: Platform.OS === "ios" ? "3%" : "2%",
+    marginBottom: Platform.OS === "ios" ? "12%" : "25%",
   },
   item: {
     height: 100,
@@ -142,13 +142,13 @@ const styles = StyleSheet.create({
     flex: 1,
     flexWrap: "wrap",
     marginRight: 10,
-    paddingLeft: "5%"
+    paddingLeft: "5%",
   },
   percent: {
     alignItems: "center",
     justifyContent: "center",
     paddingLeft: "6%",
-    paddingRight: "2%"
+    paddingRight: "2%",
   },
   header: {
     fontSize: 32,
@@ -158,9 +158,9 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === "ios" ? "2%" : "7%",
   },
   arrow: {
-    fontSize: (Platform.OS === 'ios') ? 38 : 32,
+    fontSize: Platform.OS === "ios" ? 38 : 32,
     color: "#868AE0",
-    paddingRight: "4%"
+    paddingRight: "4%",
   },
 });
 

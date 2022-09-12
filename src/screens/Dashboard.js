@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   StatusBar,
-  Dimensions
+  Dimensions,
 } from "react-native";
 import { Directions, FlatList } from "react-native-gesture-handler";
 import { Avatar, Colors } from "react-native-paper";
@@ -70,7 +70,6 @@ const getDayNumber = () => {
 };
 
 const Dashboard = () => {
-
   const [userName, setUsername] = useState("Username");
   const [avatarUrl, setAvatarUrl] = useState("");
   const [habits, setHabits] = useState([]);
@@ -87,49 +86,49 @@ const Dashboard = () => {
   const { authcontext } = useContext(AuthContext);
   const [dayNumbers, setDayNumbers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isPressed, setIsPress] = useState(false)
+  const [isPressed, setIsPress] = useState(false);
   const [selectedId, setSelectedId] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const [counter, setCounter] = useState(1);
 
-  const updateHabit = async (id,currentCount) => {
+  const updateHabit = async (id, currentCount) => {
     const data = {
-      currentCount: currentCount
-  }
+      currentCount: currentCount,
+    };
     try {
-      const url = `/api/v1/habits/${id}`
-      const response = await axiosConn.put(url,data);
+      const url = `/api/v1/habits/${id}`;
+      const response = await axiosConn.put(url, data);
       setRefresh(!refresh);
-      setCounter(counter+1);
+      setCounter(counter + 1);
       console.log("results are", response.data.data.currentCount);
     } catch (error) {
       console.log(error.response);
     }
-  }
+  };
 
   const onPress = async (id, currentCount) => {
     setRefresh(!refresh);
-    console.log("current count is ", currentCount)
+    console.log("current count is ", currentCount);
     if (selectedId.indexOf(id) == -1) {
-      const inputtedValue = id
+      const inputtedValue = id;
       const newList = [];
       newList.push(inputtedValue);
       const updatedList = [...newList, ...selectedId];
       // console.log("updatedList", updatedList)
       setSelectedId(updatedList);
-      const updatedCount = currentCount+1
-      await updateHabit(id,updatedCount)
+      const updatedCount = currentCount + 1;
+      await updateHabit(id, updatedCount);
       // console.log("addition updated count", updatedCount)
     } else {
       const newList = selectedId;
-      newList.splice(newList.indexOf(id), 1)
+      newList.splice(newList.indexOf(id), 1);
       // console.log("new List", newList)
       setSelectedId(newList);
-      const updatedCount = currentCount-1
-      await updateHabit(id,updatedCount)
+      const updatedCount = currentCount - 1;
+      await updateHabit(id, updatedCount);
       // console.log("subtraction updated count", updatedCount)
     }
-  }
+  };
 
   const updateSelectedDay = (value) => {
     // console.log("enter here: ", value);
@@ -169,8 +168,8 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    console.log("this runs")
-    setIsLoading(true)
+    console.log("this runs");
+    setIsLoading(true);
     const url = "/api/v1/habits";
     const fetchData = async () => {
       try {
@@ -187,15 +186,21 @@ const Dashboard = () => {
             let habitObj = {};
             if (y[0] === day) {
               if (y[1] === true) {
-                console.log("current count retrieved from db is ", x.currentCount);
-                (habitObj.name = x.name), (habitObj.id = x._id, habitObj.currentCount = x.currentCount, habitObj.targetCount = x.targetCount);
+                console.log(
+                  "current count retrieved from db is ",
+                  x.currentCount
+                );
+                (habitObj.name = x.name),
+                  ((habitObj.id = x._id),
+                  (habitObj.currentCount = x.currentCount),
+                  (habitObj.targetCount = x.targetCount));
                 arrayOfHabits.push(habitObj);
               }
             }
           });
         });
         setHabits(arrayOfHabits);
-        setIsLoading(false)
+        setIsLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -207,27 +212,32 @@ const Dashboard = () => {
   // console.log(habits);
 
   const renderItem = ({ item }) => {
-    
-    let backgroundColor
-    let tickColor
+    let backgroundColor;
+    let tickColor;
     // console.log("index", selectedId.indexOf(item.id));
     if (selectedId.indexOf(item.id) == -1) {
-      backgroundColor = "#E8E8F7"
-      tickColor = "#FFFFFF"
+      backgroundColor = "#E8E8F7";
+      tickColor = "#FFFFFF";
     } else {
-      backgroundColor = "#E9E9E9"
-      tickColor = "#27D24C"
+      backgroundColor = "#E9E9E9";
+      tickColor = "#27D24C";
     }
 
     return (
-      <TouchableOpacity style={[styles.habitsContainer, { backgroundColor: backgroundColor }]} key={item.id} onPress={() => { onPress(item.id, item.currentCount) }}>
+      <TouchableOpacity
+        style={[styles.habitsContainer, { backgroundColor: backgroundColor }]}
+        key={item.id}
+        onPress={() => {
+          onPress(item.id, item.currentCount);
+        }}
+      >
         <View style={styles.percent}>
           <CircularProgress
             // percent={20}
-            percent={item.currentCount / item.targetCount * 100}
+            percent={Math.round((item.currentCount / item.targetCount) * 100)}
             radius={25}
             textFontSize={12}
-            textFontColor={'white'}
+            textFontColor={"white"}
             textFontWeight={"normal"}
             overallbg="#FF9F6A"
             ringColor="white"
@@ -238,11 +248,15 @@ const Dashboard = () => {
         </View>
         <Text style={styles.username}> {item.name} </Text>
         <View style={styles.tick}>
-          <MaterialIcon name="checkbox-marked-circle" size={30} color={tickColor}></MaterialIcon>
+          <MaterialIcon
+            name="checkbox-marked-circle"
+            size={30}
+            color={tickColor}
+          ></MaterialIcon>
         </View>
       </TouchableOpacity>
-    )
-  }
+    );
+  };
 
   return (
     <View style={{ backgroundColor: "white" }}>
@@ -251,9 +265,7 @@ const Dashboard = () => {
           {/* <Avatar.Image size={64} source={{ uri: avatarUrl }}></Avatar.Image> */}
 
           {avatarUrl ? (
-            <Avatar.Image
-              size={64} source={{ uri: avatarUrl }}
-            />
+            <Avatar.Image size={64} source={{ uri: avatarUrl }} />
           ) : (
             <Avatar.Icon style={styles.profilepic} size={64} icon="account" />
           )}
@@ -490,11 +502,10 @@ const Dashboard = () => {
               renderItem={renderItem}
               keyExtractor={(item) => item.id}
               extraData={[refresh]}
-            >
-            </FlatList>
+            ></FlatList>
             {/* <View style={styles.emptyBox}/> */}
           </View>
-          <View style={styles.emptyBox}/>
+          <View style={styles.emptyBox} />
           {/* {habits.map((x) => {
               return (
                 <TouchableOpacity style={[styles.habitsContainer,{backgroundColor: isPressed == false ? "#E8E8F7": "#E9E9E9"}]} key={x.id} onPress={onPress}>
@@ -541,7 +552,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   flatListStuff: {
-    maxHeight: windowHeight/1.5,
+    maxHeight: windowHeight / 1.5,
     flex: 1,
     marginTop: StatusBar.currentHeight || 0,
     // marginTop: "5%",
@@ -554,10 +565,10 @@ const styles = StyleSheet.create({
     // paddingRight: 10,
     // paddingHorizontal: 10,
     paddingLeft: "6%",
-    paddingRight: "2%"
+    paddingRight: "2%",
   },
   tick: {
-    marginRight: 20
+    marginRight: 20,
   },
   habitsContainer: {
     height: 100,
@@ -570,7 +581,7 @@ const styles = StyleSheet.create({
   },
   scrollableContainer: {
     height: "71%",
-    paddingTop: (Platform.OS === 'ios') ? "5%" : 0,
+    paddingTop: Platform.OS === "ios" ? "5%" : 0,
   },
   generalFontTitle: {
     color: "#4E53BA",
@@ -666,7 +677,7 @@ const styles = StyleSheet.create({
   },
   emptyBox: {
     width: "100%",
-    height: (Platform.OS === 'ios') ? 0 : "13%",
+    height: Platform.OS === "ios" ? 0 : "13%",
     backgroundColor: "white",
-  }
+  },
 });
