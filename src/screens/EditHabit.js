@@ -180,9 +180,9 @@ const EditHabit = ({ route, navigation }) => {
       setShow(false);
     }
     if (event.type === "neutralButtonPressed") {
-      setEndDate(currentDate);
+      setEndDate(new Date(0));
     } else {
-      setEndDate(selectedDate);
+      setEndDate(currentDate);
     }
   };
 
