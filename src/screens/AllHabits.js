@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Image, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, ScrollView, } from "react-native";
+import { View, Image, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, ScrollView, ImageBackground, } from "react-native";
 import BackButton from "../components/loginBackButton";
 import Header from "../components/loginHeader";
 import axiosConn from "../api/config";
 import CircularProgress from "../components/CircularProgress";
 import AnimatedLoader from "../components/AnimatedLoader";
+import { getStatusBarHeight } from "react-native-status-bar-height";
+
 
 const AllHabits = ({ navigation }) => {
 
@@ -40,13 +42,16 @@ const AllHabits = ({ navigation }) => {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.container1}>
-        <Image
-          source={require("../assets/personalhabits.png")}
-          style={styles.login}
-          resizeMode="contain"
-        />
+          <Image
+            source={require("../assets/personalhabits.png")}
+            style={styles.login}
+            resizeMode="contain"
+          />
+        {/* <Header>Personal Habits</Header> */}
+      </View>
+      <View style={styles.headercontainer}>
         <Header>Personal Habits</Header>
       </View>
       <ScrollView>
@@ -77,25 +82,29 @@ const AllHabits = ({ navigation }) => {
         </View>
       </ScrollView>
       {isLoading ? <AnimatedLoader text="Loading..." /> : null}
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    // marginTop: StatusBar.currentHeight || 0,
     backgroundColor: "#fff",
-
-
-
   },
   container1: {
     alignItems: "center",
+    backgroundColor: "#E8E8F7",
+    height: (Platform.OS === 'ios') ? 180 : 160,
+    borderBottomLeftRadius: 80,
+    borderBottomRightRadius: 80,
+    marginBottom: (Platform.OS === 'ios') ? "12%" : "5%",
   },
   container2: {
     marginLeft: "8%",
     marginRight: "8%",
+    marginBottom: "5%",
+    marginTop: (Platform.OS === 'ios') ? "5%" : "2%",
   },
   item: {
     height: 100,
@@ -106,16 +115,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flex: 1,
     alignItems: "center",
+    paddingLeft: "1%"
 
   },
   title: {
-    marginLeft: 10,
+    marginLeft: 13,
     fontWeight: "700",
     fontSize: 20,
     color: "#110580",
     flex: 1,
     flexWrap: "wrap",
     marginRight: 10,
+    fontFamily: "roboto-bold"
   },
   count: {
     fontWeight: "700",
@@ -123,7 +134,9 @@ const styles = StyleSheet.create({
     color: "white",
   },
   arrow: {
-    fontSize: 32,
+    fontSize: (Platform.OS === 'ios') ? 38 : 32,
+    color: "#868AE0",
+    paddingRight: "2%"
   },
   percent: {
     // flex: 1,
@@ -134,6 +147,18 @@ const styles = StyleSheet.create({
     borderRadius: 20,
 
   },
+  login: { 
+    flex: 1,
+    position: 'absolute',
+    resizeMode: "contain",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: (Platform.OS === 'ios') ? "8%" : "2%",
+  },
+  headercontainer: {
+    alignItems: "center"
+  }
 });
 
 export default AllHabits;

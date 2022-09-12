@@ -482,31 +482,33 @@ export const styles = StyleSheet.create({
 
   viewHabitTitle:{
     fontFamily: "roboto-regular",
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "400",
     alignSelf: "flex-start",
-    paddingLeft: "5%",
+    paddingLeft: "11%",
     color: "#878585",
     marginTop: "3%"
   },
   viewHabitDescription:{
-    fontFamily: "roboto-bold",
-    fontSize: 16,
+    fontFamily: "roboto-medium",
+    fontSize: 17,
     alignSelf: "flex-start",
-    paddingLeft: "5%",
+    paddingLeft: "12%",
     marginTop: "1%",
     color: "#110580"
   },
   viewHabit:{
     flexDirection: "row",
+    marginTop: (Platform.OS === 'ios') ? "3%" : "-2%"
   },
   trashcan: {
     position: "absolute",
-    top: 10 + getStatusBarHeight(),
+    top: 15 + getStatusBarHeight(),
     right: 15,
     padding: 5,
-    borderWidth: 1.5,
+    borderWidth: 0.5,
     borderRadius: 50,
   },
+
 
 });
