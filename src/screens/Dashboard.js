@@ -19,6 +19,7 @@ import { getUser } from "../utils/securestore.utils";
 import { AuthContext } from "../contexts/AuthContext";
 import AnimatedLoader from "../components/AnimatedLoader";
 import CircularProgress from "../components/CircularProgress";
+import moment from "moment";
 
 const windowHeight = Dimensions.get("window").height;
 
@@ -179,11 +180,12 @@ const Dashboard = () => {
         // console.log(day);
         const arrayOfHabits = [];
         habits.forEach((x) => {
-          let todayDate = new Date();
-          let endDate = new Date(x.endDate)
+          let todayDate = moment(new Date()).local().format("YYYY-MM-DD");
+          let endDate = moment(new Date(x.endDate)).local().format("YYYY-MM-DD")
           // console.log("today's date", todayDate);
           // console.log("end date", endDate);
-          if (todayDate < endDate){
+          if (moment(todayDate).isSameOrBefore(endDate)){
+            // console.log("today's habit is", x)
             let frequency = x.frequency[0];
             let arrayOfObjects = Object.entries(frequency);
             // console.log("array of objects are", arrayOfObjects);
