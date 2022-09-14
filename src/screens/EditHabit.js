@@ -125,6 +125,10 @@ const EditHabit = ({ route, navigation }) => {
   }, []);
 
   useEffect(() => {
+    LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
+  }, []);
+
+  useEffect(() => {
     const prepare = () => {
       setHabitData((prevHabit) => ({
         ...prevHabit,

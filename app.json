@@ -13,15 +13,19 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "sdi535.ios.habithobbit"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/hh-adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "sdi535.habithobbit"
     },
     "web": {
       "favicon": "./src/assets/favicon.png"

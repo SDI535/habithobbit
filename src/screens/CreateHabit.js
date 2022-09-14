@@ -20,6 +20,8 @@ import { Switch } from "react-native-paper";
 import moment from "moment";
 import EditHabit from "./EditHabit";
 
+import { LogBox } from "react-native";
+
 const CreateHabit = ({ navigation }) => {
   const [habitData, setHabitData] = useState({
     name: "",
@@ -129,6 +131,11 @@ const CreateHabit = ({ navigation }) => {
   //     return;
   //   }
   // }
+
+  //Ignore VirtualLogs
+  useEffect(() => {
+    LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
+  }, []);
 
   useEffect(() => {
     const prepare = () => {
