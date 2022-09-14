@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   FlatList,
@@ -12,37 +12,38 @@ import BackButton from "../components/loginBackButton";
 import axiosConn from "../api/config";
 import CircularProgress from "../components/CircularProgress";
 import AnimatedLoader from "../components/AnimatedLoader";
+import { useFocusEffect } from "@react-navigation/native";
 
 const CompletedHabits = ({ navigation }) => {
   const [Habits, setHabits] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    setIsLoading(true);
-    const url = "/api/v1/habits";
-    const fetchData = async () => {
-      try {
-        console.log("this is fetched")
-        const response = await axiosConn.get(url);
-        const habits = response.data.data;
-        const Completedh = habits.filter(
-          (x) => {
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true);
+      const url = "/api/v1/habits";
+      const fetchData = async () => {
+        try {
+          console.log("this is fetched");
+          const response = await axiosConn.get(url);
+          const habits = response.data.data;
+          const Completedh = habits.filter((x) => {
             // console.log("created at",x.createdAt);
             // console.log("end date", x.endDate);
             return (
               // console.log("Parsed date", Date.parse(x.createdAt));
               Date.parse(x.endDate) <= new Date()
-            )
-          }
-        );
-        setHabits(Completedh);
-        setIsLoading(false);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, []);
+            );
+          });
+          setHabits(Completedh);
+          setIsLoading(false);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      fetchData();
+    }, [])
+  );
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
@@ -87,8 +88,8 @@ const CompletedHabits = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <BackButton
-          goBack={() => navigation.replace("Base", { screen: "Schedule" })}
-        />
+        goBack={() => navigation.replace("Base", { screen: "Schedule" })}
+      />
       <View style={styles.container1}>
         {/* <BackButton
           goBack={() => navigation.replace("Base", { screen: "Schedule" })}
@@ -117,7 +118,7 @@ const styles = StyleSheet.create({
   container1: {
     alignItems: "center",
     alignSelf: "center",
-    width: "85%"
+    width: "85%",
   },
   container2: {
     marginLeft: "8%",
@@ -142,7 +143,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexWrap: "wrap",
     marginRight: 10,
-    paddingLeft: "5%"
+    paddingLeft: "5%",
   },
   percent: {
     alignItems: "center",
@@ -157,9 +158,9 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === "ios" ? "2%" : "7%",
   },
   arrow: {
-    fontSize: (Platform.OS === 'ios') ? 38 : 32,
+    fontSize: Platform.OS === "ios" ? 38 : 32,
     color: "#868AE0",
-    paddingRight: "4%"
+    paddingRight: "4%",
   },
 });
 
