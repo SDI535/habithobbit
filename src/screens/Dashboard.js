@@ -100,7 +100,7 @@ const Dashboard = () => {
       const response = await axiosConn.put(url, data);
       setRefresh(!refresh);
       setCounter(counter + 1);
-      console.log("results are", response.data.data.currentCount);
+      // console.log("results are", response.data.data.currentCount);
     } catch (error) {
       console.log(error.response);
     }
@@ -108,7 +108,7 @@ const Dashboard = () => {
 
   const onPress = async (id, currentCount) => {
     setRefresh(!refresh);
-    console.log("current count is ", currentCount);
+    // console.log("current count is ", currentCount);
     if (selectedId.indexOf(id) == -1) {
       const inputtedValue = id;
       const newList = [];
@@ -168,7 +168,7 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    console.log("this runs");
+    // console.log("this runs");
     setIsLoading(true);
     const url = "/api/v1/habits";
     const fetchData = async () => {
@@ -186,10 +186,10 @@ const Dashboard = () => {
             let habitObj = {};
             if (y[0] === day) {
               if (y[1] === true) {
-                console.log(
-                  "current count retrieved from db is ",
-                  x.currentCount
-                );
+                // console.log(
+                //   "current count retrieved from db is ",
+                //   x.currentCount
+                // );
                 (habitObj.name = x.name),
                   ((habitObj.id = x._id),
                   (habitObj.currentCount = x.currentCount),
@@ -215,7 +215,7 @@ const Dashboard = () => {
     let backgroundColor;
     let tickColor;
     // console.log("index", selectedId.indexOf(item.id));
-    if (selectedId.indexOf(item.id) == -1) {
+    if (selectedId.indexOf(item.id) == -1 || selectedDay!=dayNumbers[0]) {
       backgroundColor = "#E8E8F7";
       tickColor = "#FFFFFF";
     } else {
@@ -225,6 +225,7 @@ const Dashboard = () => {
 
     return (
       <TouchableOpacity
+        disabled={selectedDay==dayNumbers[0] ? false : true}
         style={[styles.habitsContainer, { backgroundColor: backgroundColor }]}
         key={item.id}
         onPress={() => {
