@@ -141,6 +141,7 @@ const EditHabit = ({ route, navigation }) => {
           sun: dayValue.includes(7),
         },
         endDate: endDate,
+        currentCount: masterHabit.currentCount,
         targetCount: calculateTargetCount(),
         private: isPrivacyOn,
       }));
