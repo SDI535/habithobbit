@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "habithobbit",
+    "slug": "habithobbit",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./src/assets/hh-icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./src/assets/SplashScreen.png",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/hh-adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    "web": {
+      "favicon": "./src/assets/favicon.png"
+    }
+  }
+}
