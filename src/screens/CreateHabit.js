@@ -7,6 +7,7 @@ import {
   Keyboard,
   Platform,
   ScrollView,
+  LogBox,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import axiosConn from "../api/config";
@@ -19,8 +20,6 @@ import { habitValidator } from "../helpers/habitValidator";
 import { Switch } from "react-native-paper";
 import moment from "moment";
 import EditHabit from "./EditHabit";
-
-import { LogBox } from "react-native";
 
 const CreateHabit = ({ navigation }) => {
   const [habitData, setHabitData] = useState({

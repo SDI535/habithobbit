@@ -7,6 +7,7 @@ import {
   Keyboard,
   Platform,
   ScrollView,
+  LogBox,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import axiosConn from "../api/config";
