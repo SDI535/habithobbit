@@ -6,6 +6,7 @@ import axiosConn from "../api/config";
 import CircularProgress from "../components/CircularProgress";
 import AnimatedLoader from "../components/AnimatedLoader";
 import { getStatusBarHeight } from "react-native-status-bar-height";
+import { useFocusEffect } from "@react-navigation/native";
 
 
 const AllHabits = ({ navigation }) => {
@@ -15,31 +16,59 @@ const AllHabits = ({ navigation }) => {
   const [comHabits, setcomHabits] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    setIsLoading(true);
-    const url = "/api/v1/habits";
-    const fetchData = async () => {
-      try {
-        const response = await axiosConn.get(url);
-        const habits = response.data.data;
-        const Ongoingh = habits.filter(x => Date.parse(x.createdAt) < new Date());
-        const Completedh = habits.filter(x => Date.parse(x.createdAt) > new Date());
+  useFocusEffect(
+    React.useCallback(()=>{
+      setIsLoading(true);
+      const url = "/api/v1/habits";
+      const fetchData = async () => {
+        try {
+          const response = await axiosConn.get(url);
+          const habits = response.data.data;
+          const Ongoingh = habits.filter(x => Date.parse(x.endDate) > new Date());
+          const Completedh = habits.filter(x => Date.parse(x.endDate) <= new Date());
+  
+          const counthabits = habits.length;
+          const countOngoingh = Ongoingh.length;
+          const countCompletedh = Completedh.length;
+  
+          setallHabits(counthabits);
+          setHonabits(countOngoingh);
+          setcomHabits(countCompletedh);
+          setIsLoading(false);
+  
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      fetchData();
+    },[])
+  )
 
-        const counthabits = habits.length;
-        const countOngoingh = Ongoingh.length;
-        const countCompletedh = Completedh.length;
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   const url = "/api/v1/habits";
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axiosConn.get(url);
+  //       const habits = response.data.data;
+  //       const Ongoingh = habits.filter(x => Date.parse(x.createdAt) < new Date());
+  //       const Completedh = habits.filter(x => Date.parse(x.createdAt) > new Date());
 
-        setallHabits(counthabits);
-        setHonabits(countOngoingh);
-        setcomHabits(countCompletedh);
-        setIsLoading(false);
+  //       const counthabits = habits.length;
+  //       const countOngoingh = Ongoingh.length;
+  //       const countCompletedh = Completedh.length;
 
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, []);
+  //       setallHabits(counthabits);
+  //       setHonabits(countOngoingh);
+  //       setcomHabits(countCompletedh);
+  //       setIsLoading(false);
+
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
 
   return (
     <View style={styles.container}>

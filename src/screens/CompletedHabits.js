@@ -22,10 +22,18 @@ const CompletedHabits = ({ navigation }) => {
     const url = "/api/v1/habits";
     const fetchData = async () => {
       try {
+        console.log("this is fetched")
         const response = await axiosConn.get(url);
         const habits = response.data.data;
         const Completedh = habits.filter(
-          (x) => Date.parse(x.createdAt) > new Date()
+          (x) => {
+            // console.log("created at",x.createdAt);
+            // console.log("end date", x.endDate);
+            return (
+              // console.log("Parsed date", Date.parse(x.createdAt));
+              Date.parse(x.endDate) <= new Date()
+            )
+          }
         );
         setHabits(Completedh);
         setIsLoading(false);

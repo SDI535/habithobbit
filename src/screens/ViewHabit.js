@@ -18,7 +18,7 @@ import Button from "../components/loginButton";
 import { EditHabit } from "./EditHabit";
 
 const ViewHabit = ({ route, navigation }) => {
-  const { isUpdated } = route.params;
+//   const { isUpdated } = route.params;
   //console.log("view habit", isUpdated);
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
@@ -34,7 +34,7 @@ const ViewHabit = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const [masterHabit, setMasterHabit] = useState({});
-  const [updated, setUpdated] = useState(0);
+//   const [updated, setUpdated] = useState(0);
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -143,12 +143,12 @@ const ViewHabit = ({ route, navigation }) => {
     }, [])
   );
 
-  useEffect(() => {
-    if (route.params.isUpdated) {
-      //setUpdated((prev) => {prev + 1})
-      setHabitName(isUpdated.name);
-    }
-  }, [route.params.isUpdated]);
+//   useEffect(() => {
+//     if (route.params.isUpdated) {
+//       //setUpdated((prev) => {prev + 1})
+//       setHabitName(isUpdated.name);
+//     }
+//   }, [route.params.isUpdated]);
 
   const datesCalculation = (weekday, current, end) => {
     let calculatedDates = [];
@@ -196,7 +196,7 @@ const ViewHabit = ({ route, navigation }) => {
             </TouchableOpacity>
             <View style={styles.viewHabit}>
                 <Text style={styles.topHeader}>{habitName}</Text>
-                <TouchableOpacity style={{ marginLeft: "1%", marginTop: "1%" }}>
+                <TouchableOpacity style={{ marginLeft: "1%", marginTop: "1%" }} onPress={()=>navigation.navigate("EditHabit", { masterHabit: masterHabit })}>
                     <AntDesign
                         name="edit"
                         size={20}

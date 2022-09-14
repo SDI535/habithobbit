@@ -12,29 +12,51 @@ import BackButton from "../components/loginBackButton";
 import axiosConn from "../api/config";
 import CircularProgress from "../components/CircularProgress";
 import AnimatedLoader from "../components/AnimatedLoader";
+import { useFocusEffect } from "@react-navigation/native";
 
 const OngoingHabits = ({ navigation }) => {
   const [Habits, setHabits] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    setIsLoading(true);
-    const url = "/api/v1/habits";
-    const fetchData = async () => {
-      try {
-        const response = await axiosConn.get(url);
-        const habits = response.data.data;
-        const Ongoingh = habits.filter(
-          (x) => Date.parse(x.createdAt) < new Date()
-        );
-        setHabits(Ongoingh);
-        setIsLoading(false);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, []);
+  useFocusEffect(
+    React.useCallback(()=>{
+      setIsLoading(true);
+      const url = "/api/v1/habits";
+      const fetchData = async () => {
+        try {
+          const response = await axiosConn.get(url);
+          const habits = response.data.data;
+          const Ongoingh = habits.filter(
+            (x) => Date.parse(x.endDate) > new Date()
+          );
+          setHabits(Ongoingh);
+          setIsLoading(false);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      fetchData();
+    },[])
+  )
+
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   const url = "/api/v1/habits";
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axiosConn.get(url);
+  //       const habits = response.data.data;
+  //       const Ongoingh = habits.filter(
+  //         (x) => Date.parse(x.createdAt) < new Date()
+  //       );
+  //       setHabits(Ongoingh);
+  //       setIsLoading(false);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
 
   const renderItem = ({ item }) => (
     <TouchableOpacity

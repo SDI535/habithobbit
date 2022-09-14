@@ -179,25 +179,50 @@ const Dashboard = () => {
         // console.log(day);
         const arrayOfHabits = [];
         habits.forEach((x) => {
-          let frequency = x.frequency[0];
-          let arrayOfObjects = Object.entries(frequency);
-
-          arrayOfObjects.forEach((y) => {
-            let habitObj = {};
-            if (y[0] === day) {
-              if (y[1] === true) {
-                // console.log(
-                //   "current count retrieved from db is ",
-                //   x.currentCount
-                // );
-                (habitObj.name = x.name),
-                  ((habitObj.id = x._id),
-                  (habitObj.currentCount = x.currentCount),
-                  (habitObj.targetCount = x.targetCount));
-                arrayOfHabits.push(habitObj);
+          let todayDate = new Date();
+          let endDate = new Date(x.endDate)
+          // console.log("today's date", todayDate);
+          // console.log("end date", endDate);
+          if (todayDate < endDate){
+            let frequency = x.frequency[0];
+            let arrayOfObjects = Object.entries(frequency);
+            // console.log("array of objects are", arrayOfObjects);
+            arrayOfObjects.forEach((y) => {
+              let habitObj = {};
+              if (y[0] === day) {
+                if (y[1] === true) {
+                  // console.log(
+                  //   "current count retrieved from db is ",
+                  //   x.currentCount
+                  // );
+                  (habitObj.name = x.name),
+                    ((habitObj.id = x._id),
+                    (habitObj.currentCount = x.currentCount),
+                    (habitObj.targetCount = x.targetCount));
+                  arrayOfHabits.push(habitObj);
+                }
               }
-            }
-          });
+            });
+          }
+          // let frequency = x.frequency[0];
+          // let arrayOfObjects = Object.entries(frequency);
+          // // console.log("array of objects are", arrayOfObjects);
+          // arrayOfObjects.forEach((y) => {
+          //   let habitObj = {};
+          //   if (y[0] === day) {
+          //     if (y[1] === true) {
+          //       // console.log(
+          //       //   "current count retrieved from db is ",
+          //       //   x.currentCount
+          //       // );
+          //       (habitObj.name = x.name),
+          //         ((habitObj.id = x._id),
+          //         (habitObj.currentCount = x.currentCount),
+          //         (habitObj.targetCount = x.targetCount));
+          //       arrayOfHabits.push(habitObj);
+          //     }
+          //   }
+          // });
         });
         setHabits(arrayOfHabits);
         setIsLoading(false);
@@ -553,7 +578,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   flatListStuff: {
-    maxHeight: windowHeight / 1.5,
+    maxHeight: windowHeight / 1.8,
     flex: 1,
     marginTop: StatusBar.currentHeight || 0,
     // marginTop: "5%",

@@ -499,7 +499,7 @@ export const styles = StyleSheet.create({
   },
   viewHabit:{
     flexDirection: "row",
-    marginTop: (Platform.OS === 'ios') ? "3%" : "-2%"
+    marginTop: (Platform.OS === 'ios') ? "-3%" : "-2%"
   },
   trashcan: {
     position: "absolute",
