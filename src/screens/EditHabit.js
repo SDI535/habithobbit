@@ -85,14 +85,14 @@ const EditHabit = ({ route, navigation }) => {
   const [show, setShow] = useState(false);
   const onTogglePrivacy = () => setIsPrivacyOn(!isPrivacyOn);
   const [isPrivacyOn, setIsPrivacyOn] = useState(masterHabit.private);
-  const createdAt = "";
+  const createdAt = masterHabit.createdAt;
   const [unchanged, setunchanged] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdated, setIsUpdated] = useState(false);
   const [masterHabitl, setMasterHabitl] = useState(masterHabit);
 
-  console.log(masterHabit);
-  console.log("End date:", endDate);
+  // console.log(masterHabit);
+  // console.log("End date:", endDate);
 
   useEffect(() => {
     let arrayList = [];
@@ -145,11 +145,7 @@ const EditHabit = ({ route, navigation }) => {
         private: isPrivacyOn,
       }));
     };
-    //   const checkk = () => {
-    //     setunchanged(Boolean(habitData === originalData));
-    // };
     prepare();
-    //  checkk();
   }, [habit, habitDesc, freqValue, dayValue, endDate, isPrivacyOn]);
 
   const saveEditHabit = async () => {
@@ -161,7 +157,6 @@ const EditHabit = ({ route, navigation }) => {
         Alert.alert("SUCCESS", "Habit is updated!", [{ text: "Ok" }]);
       }
       masterHabit = response.data.data;
-      //console.log("Inside save edit habit:", masterHabit);
       setMasterHabitl(response.data.data);
       setIsLoading(false);
       setIsUpdated(true);
@@ -190,14 +185,13 @@ const EditHabit = ({ route, navigation }) => {
     let totalCount = 0;
     let start = moment(createdAt);
     let end = moment(endDate);
-    console.log(createdAt);
 
     // if freq = daily, totalCount = daysInterval (minus day it was created)
     // if freq = weekly, and startday = wed, selection is every  thurs, sat, tuesday, wednesday - starts this week (thurs, sat) and thereafter (wednesday, tues, thurs, sat)
     // totalCount = weeks (including this week) x count of days - (1st occurrance of days that is before startday) - (last occurance of days that is after end date)
     if (freqValue === "daily") {
       let daysInterval = end.diff(start, "days", true);
-      totalCount = Math.round(daysInterval);
+      totalCount = Math.round(daysInterval) + 1;
     } else {
       let diffinWeeks = end.diff(start, "weeks", true);
       // get count of selected days per week
@@ -208,12 +202,11 @@ const EditHabit = ({ route, navigation }) => {
 
       let count = 0;
       for (let i = 0; i < dayValue.length; i++) {
-        if (dayValue[i] <= startDay || dayValue[i] > endDay) {
+        if (dayValue[i] < startDay || dayValue[i] > endDay) {
           count++;
         }
       }
       totalCount = (Math.round(diffinWeeks) + 1) * countPerWeek - count;
-      console.log(totalCount);
     }
     return totalCount;
   };
