@@ -3,17 +3,28 @@ import DashboardScreen from "../screens/Dashboard";
 import Icon from "react-native-vector-icons/AntDesign";
 import { StyleSheet, Text, View } from "react-native";
 import CreateHabit from "../screens/CreateHabit";
-import HabitsActivityFeed from "../screens/HabitsActivityFeed";
 import UserProfile from "../screens/UserProfile";
+
 import { createStackNavigator } from "@react-navigation/stack";
 const Stack = createStackNavigator();
+
+// const UserPro = () => {
+//   return (
+//     <Stack.Navigator
+//       initialRouteName="User2"
+//       screenOptions={{
+//         headerShown: false,
+//       }}
+//     >
+//       <Stack.Screen name="User2" component={UserProfile} />
+//     </Stack.Navigator>
+//   );
+// };
+
+
+
+
 const Tab = createBottomTabNavigator();
-import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
-import AllHabits from "../screens/AllHabits";
-import CompletedHabits from "../screens/CompletedHabits";
-import OngoingHabits from "../screens/OngoingHabits";
-import ViewHabit from "../screens/ViewHabit";
-import EditHabit from "../screens/EditHabit";
 
 const Tabs = () => {
   return (
@@ -25,11 +36,10 @@ const Tabs = () => {
           borderTopWidth: 0,
           justifyContent: "center",
           alignItems: "center",
-          height: "10%"
         },
         tabBarShowLabel: false,
-        tabBarActiveTintColor: "#110580",
-        tabBarInactiveTintColor: "#868AE0",
+        tabBarActiveTintColor: "black",
+        tabBarInactiveTintColor: "grey",
       }}
     >
       <Tab.Screen
@@ -43,7 +53,7 @@ const Tabs = () => {
       />
       <Tab.Screen
         name="Team"
-        component={HabitsActivityFeed}
+        component={DashboardScreen}
         options={{
           tabBarIcon: ({ focused, color }) => (
             <Icon name="team" size={26} color={color}></Icon>
@@ -66,7 +76,7 @@ const Tabs = () => {
       />
       <Tab.Screen
         name="Schedule"
-        component={AllHabits}
+        component={DashboardScreen}
         options={{
           tabBarIcon: ({ focused, color }) => (
             <Icon name="calendar" size={26} color={color}></Icon>
@@ -75,11 +85,8 @@ const Tabs = () => {
       />
       <Tab.Screen
         name="User"
-
         component={UserProfile}
         options={{
-          tabBarStyle: { display: 'none' },
-
           tabBarIcon: ({ focused, color }) => (
             <Icon name="user" size={26} color={color}></Icon>
           ),
@@ -89,7 +96,7 @@ const Tabs = () => {
   );
 };
 
-
+// export default Tabs;
 
 const PrivateRoute = () => {
   return (
@@ -100,10 +107,6 @@ const PrivateRoute = () => {
       }}
     >
       <Stack.Screen name="Base" component={Tabs} />
-      <Stack.Screen name="OngoingHabits" component={OngoingHabits} />
-      <Stack.Screen name="CompletedHabits" component={CompletedHabits} />
-      <Stack.Screen name="ViewHabit" component={ViewHabit} />
-      <Stack.Screen name="EditHabit" component={EditHabit} />
     </Stack.Navigator>
   );
 };

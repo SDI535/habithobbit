@@ -30,8 +30,8 @@ export const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     width: windowWidth,
-    // height: windowHeight,
   },
+  // WELCOME PAGE
   welcomecontainer: {
     flex: 1,
     alignItems: "center",
@@ -39,7 +39,7 @@ export const styles = StyleSheet.create({
     padding: 20,
     width: "100%",
     maxWidth: 340,
-    marginTop: "110%",
+    marginTop: (Platform.OS === 'ios') ? "110%" : "87%",
   },
   welcomeheader: {
     fontSize: 32,
@@ -53,13 +53,35 @@ export const styles = StyleSheet.create({
     color: theme.colors.text,
     textAlign: "center",
     fontFamily: "roboto-light",
-    marginBottom: "50%",
+    marginBottom: (Platform.OS === 'ios') ? "50%" : "20%",
   },
+  // MAIN BUTTON
   button: {
     width: 160,
     paddingVertical: 3,
     borderRadius: 50,
     backgroundColor: theme.colors.primary,
+  },
+  buttonYes: {
+    width: 160,
+    paddingVertical: 3,
+    borderRadius: 50,
+    backgroundColor: theme.colors.primary,
+    margin: 10,
+  },
+  buttonunselected: {
+    width: 160,
+    paddingVertical: 3,
+    borderRadius: 50,
+    backgroundColor: theme.colors.tertiary,
+    margin: 10,
+  },
+  buttonNot: {
+    width: 160,
+    paddingVertical: 3,
+    borderRadius: 50,
+    backgroundColor: theme.colors.subtext,
+    margin: 10,
   },
   buttontext: {
     fontFamily: "roboto-regular",
@@ -67,6 +89,7 @@ export const styles = StyleSheet.create({
     lineHeight: 16,
     color: theme.colors.text,
   },
+  // ONBOARD PAGE
   onboardcontainer: {
     flex: 1,
     alignItems: "center",
@@ -86,9 +109,12 @@ export const styles = StyleSheet.create({
   },
   openingheader: {
     fontSize: 32,
+    backgroundColor: (Platform.OS === 'ios') ? null : "rgba(255, 255, 255, 0.75)",
     color: theme.colors.secondary,
     fontFamily: "roboto-bold",
-    paddingVertical: 12,
+    paddingBottom: (Platform.OS === 'ios') ? "2%" : "4%",
+    paddingTop: (Platform.OS === 'ios') ? "2%" : "7%",
+    paddingHorizontal: (Platform.OS === 'ios') ? 0 : "15%",
   },
   openingtext: {
     fontSize: 12,
@@ -132,61 +158,82 @@ export const styles = StyleSheet.create({
     borderRadius: 50,
     marginRight: 9,
   },
+  // REGISTER PAGE
   registercontainer: {
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-start",
-    padding: 10,
+    padding: 0,
     width: windowWidth,
-    paddingTop: "5%",
-    paddingBottom: "10%",
+    paddingTop: (Platform.OS === 'ios') ? "5%" : 0,
+    paddingBottom: (Platform.OS === 'ios') ? "10%" : "7%",
     height: windowHeight,
     backgroundColor: theme.colors.text,
-    // backgroundColor: "blue",
   },
-  registerrow: {
-    flexDirection: "row",
-    paddingTop: "5%",
-  },
-  link: {
-    fontFamily: "roboto-bold",
-    color: theme.colors.primary,
-  },
-  register: {
+  register: { // IMAGE
     flex: 1,
     resizeMode: "contain",
-    width: "55%",
+    width: (Platform.OS === 'ios') ? "55%" : "50%",
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: "20%",
   },
-  registertext: {
-    fontFamily: "roboto-regular",
-    color: theme.colors.subtext,
-  },
-  logincontainer: {
-    width: "80%",
-    height: 50,
-    marginVertical: 12,
+  keyboardavoiding: {
+    flex: 1,
+    marginBottom: (Platform.OS === 'ios') ? 5 : "26%",
+    marginTop: (Platform.OS === 'ios') ? 0 : "3.5%",
+    width: "100%",
+    maxWidth: 400,
+    alignSelf: "center",
+    alignItems: "center",
+    justifyContent: "center",
   },
   reginputcontainer: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
     width: windowWidth,
-    ...Platform.select({
-      ios: {
-        paddingBottom: "25%",
-      },
-      android: {
-        paddingBottom: 0,
-      },
-    }),
-
+    paddingBottom: (Platform.OS === 'ios') ? "15%" : "1%",
     height: windowHeight,
   },
-  logininput: {
-    backgroundColor: "#FFFFFF",
+  registerrow: {
+    flexDirection: "row",
+    paddingTop: (Platform.OS === 'ios') ? "5%" : "2%",
+  },
+  registertext: {
+    fontFamily: "roboto-regular",
+    color: theme.colors.subtext,
+  },
+  link: {
+    fontFamily: "roboto-bold",
+    color: theme.colors.primary,
+  },
+  // LOGIN PAGE
+  keyboardavoiding2: {
+    flex: 1,
+    marginBottom: (Platform.OS === 'ios') ? 5 : "16%",
+    marginTop: (Platform.OS === 'ios') ? 0 : "-5%",
+    paddingTop: (Platform.OS === 'ios') ? 0 : "-10%",
+    width: "100%",
+    maxWidth: 400,
+    alignSelf: "center",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  logincontainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    width: windowWidth,
+    paddingBottom: (Platform.OS === 'ios') ? "25%" : "5%",
+    height: windowHeight,
+  },
+  login: { // IMAGE
+    flex: 1,
+    resizeMode: "contain",
+    width: (Platform.OS === 'ios') ? "65%" : "50%",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: "10%",
   },
   logindescription: {
     fontSize: 13,
@@ -207,6 +254,48 @@ export const styles = StyleSheet.create({
     width: 35,
     height: 35,
   },
+  editbtn: {
+    position: "absolute",
+    top: 10 + getStatusBarHeight(),
+    right: 4,
+  },
+  camerabtn: {
+    position: "absolute",
+    top: 125 + getStatusBarHeight(),
+    right: 150,
+    borderWidth: 2,
+    borderColor: theme.colors.secondary,
+    backgroundColor: theme.colors.secondary
+  },
+  profilepic: {
+    position: "absolute",
+    top: 65 + getStatusBarHeight(),
+  },
+  profilename: {
+    position: "absolute",
+    top: 15 + getStatusBarHeight(),
+    color: "#110580",
+    fontSize: 20,
+    paddingBottom: "5%",
+    fontFamily: "roboto-bold",
+  },
+  popheader: {
+    // position: "absolute",
+    // top: 10 + getStatusBarHeight(),
+    color: "#000000",
+    fontSize: 20,
+    paddingTop: "5%",
+    // paddingBottom: "5%",
+    fontFamily: "roboto-medium",
+    textAlign:"center",
+  },
+  profileemail: {
+    position: "absolute",
+    top: 185 + getStatusBarHeight(),
+    color: "#110580",
+    fontSize: 16,
+    fontFamily: "roboto-light",
+  },
   forgotPassword: {
     width: "100%",
     alignItems: "flex-end",
@@ -216,37 +305,10 @@ export const styles = StyleSheet.create({
     fontSize: 13,
     color: theme.colors.secondary,
   },
-  login: {
-    flex: 1,
-    resizeMode: "contain",
-    width: "65%",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingTop: "20%",
-  },
-  logininputcontainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    width: windowWidth,
-    // paddingBottom: "45%",
-    height: windowHeight,
-  },
-  keyboardavoiding: {
-    flex: 1,
-    padding: 10,
-    width: "100%",
-    // width: windowWidth,
-    // height: windowHeight,
-    maxWidth: 400,
-    alignSelf: "center",
-    alignItems: "center",
-    justifyContent: "center",
-  },
   // Text input component
   textinputcontainer: {
     width: "85%",
-    marginVertical: 5,
+    marginTop: 5,
   },
   textinput: {
     backgroundColor: theme.colors.text,
@@ -269,8 +331,45 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     paddingVertical: 50,
-    // paddingHorizontal: 20,
     width: "100%",
+  },
+  profilecontainer: {
+    // flex: 1,
+    backgroundColor: "#E8E8F7",
+    alignItems: "center",
+    // justifyContent: "flex-start",
+    paddingTop: (Platform.OS === 'ios') ? "65%" : "60%",
+    paddingBottom: "5%",
+    // paddingVertical: 110,
+    // paddingHorizontal: 20,
+    // width: "100%",
+  },
+  profilecontainer2: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    // justifyContent: "flex-start",
+    // paddingVertical: 110,
+    // paddingHorizontal: 20,
+    // width: "100%",
+    // borderRadius: 100,
+    borderTopLeftRadius: 80,
+    borderTopRightRadius: 80,
+    paddingTop: "4%",
+    width: "110%",
+    alignSelf: "center"
+  },
+  profilecontainer3: {
+    flex: 1,
+    backgroundColor: "white",
+    alignItems: "center",
+    // justifyContent: "flex-start",
+    // paddingHorizontal: 20,
+    // width: "100%",
+    // borderRadius: 30,
+    paddingTop: "5%",
+    borderTopLeftRadius: 80,
+    borderTopRightRadius: 80,
   },
   topHeader: {
     color: "#110580",
@@ -285,6 +384,17 @@ export const styles = StyleSheet.create({
     marginTop: 15,
     paddingLeft: 35,
     fontFamily: "roboto-medium",
+  },
+  popTxt: {
+    color: "#878585",
+    fontSize: 14,
+    maxWidth: "65%",
+    // alignSelf: "flex-start",
+    // marginTop: 15,
+    // paddingLeft: 35,
+    fontFamily: "roboto-light",
+    textAlign:"center",
+    paddingVertical: "2%"
   },
   freqDropdown: {
     paddingVertical: 20,
@@ -317,7 +427,7 @@ export const styles = StyleSheet.create({
     alignSelf: "center",
     width: "85%",
     borderRadius: 50,
-    marginBottom: 50,
+    marginBottom: "1%",
   },
   dropDown: {
     width: "85%",
@@ -336,4 +446,69 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     color: theme.colors.text,
   },
+  endDate: {
+    width: "85%",
+    backgroundColor: "#fff",
+    marginTop: "4%",
+    borderColor: "black",
+    borderWidth: 0.5,
+    paddingVertical: "3%",
+  },
+  privacyContainer: {
+    borderWidth: 0.5,
+    borderRadius: 50,
+    paddingVertical: (Platform.OS === 'ios') ? 14 : 8
+    ,
+    paddingHorizontal: 20,
+    alignItems: "center",
+    width: "85%",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: "4%"
+  },
+  privacyText: {
+    fontSize: 10,
+    fontFamily: "roboto-light",
+    color: "red",
+    alignSelf: "flex-start",
+    paddingLeft: "12%",
+    paddingTop: "1%",
+    paddingBottom: "7%",
+  },
+  endDateLabel: {
+    color: theme.colors.primary,
+  },
+
+  viewHabitTitle:{
+    fontFamily: "roboto-regular",
+    fontSize: 14,
+    fontWeight: "400",
+    alignSelf: "flex-start",
+    paddingLeft: "11%",
+    color: "#878585",
+    marginTop: "3%"
+  },
+  viewHabitDescription:{
+    fontFamily: "roboto-medium",
+    fontSize: 17,
+    alignSelf: "flex-start",
+    paddingLeft: "12%",
+    marginTop: "1%",
+    color: "#110580"
+  },
+  viewHabit:{
+    flexDirection: "row",
+    marginTop: (Platform.OS === 'ios') ? "-3%" : "-2%"
+  },
+  trashcan: {
+    position: "absolute",
+    top: 15 + getStatusBarHeight(),
+    right: 15,
+    padding: 5,
+    borderWidth: 0.5,
+    borderRadius: 50,
+  },
+
+
 });

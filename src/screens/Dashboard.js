@@ -6,8 +6,10 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ScrollView,
+  StatusBar,
+  Dimensions,
 } from "react-native";
-import { Directions } from "react-native-gesture-handler";
+import { Directions, FlatList } from "react-native-gesture-handler";
 import { Avatar, Colors } from "react-native-paper";
 import iconImage from "../assets/pexels-serena-koi-1576193.jpg";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -15,6 +17,10 @@ import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import axiosConn from "../api/config";
 import { getUser } from "../utils/securestore.utils";
 import { AuthContext } from "../contexts/AuthContext";
+import AnimatedLoader from "../components/AnimatedLoader";
+import CircularProgress from "../components/CircularProgress";
+
+const windowHeight = Dimensions.get("window").height;
 
 const getCurrentDate = () => {
   let day = new Date().getDate();
@@ -65,6 +71,7 @@ const getDayNumber = () => {
 
 const Dashboard = () => {
   const [userName, setUsername] = useState("Username");
+  const [avatarUrl, setAvatarUrl] = useState("");
   const [habits, setHabits] = useState([]);
   const [selectedDay, setSelectedDay] = useState(new Date().getDay());
   const dayToWeekdayMapping = [
@@ -78,9 +85,53 @@ const Dashboard = () => {
   ];
   const { authcontext } = useContext(AuthContext);
   const [dayNumbers, setDayNumbers] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isPressed, setIsPress] = useState(false);
+  const [selectedId, setSelectedId] = useState([]);
+  const [refresh, setRefresh] = useState(false);
+  const [counter, setCounter] = useState(1);
+
+  const updateHabit = async (id, currentCount) => {
+    const data = {
+      currentCount: currentCount,
+    };
+    try {
+      const url = `/api/v1/habits/${id}`;
+      const response = await axiosConn.put(url, data);
+      setRefresh(!refresh);
+      setCounter(counter + 1);
+      // console.log("results are", response.data.data.currentCount);
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
+  const onPress = async (id, currentCount) => {
+    setRefresh(!refresh);
+    // console.log("current count is ", currentCount);
+    if (selectedId.indexOf(id) == -1) {
+      const inputtedValue = id;
+      const newList = [];
+      newList.push(inputtedValue);
+      const updatedList = [...newList, ...selectedId];
+      // console.log("updatedList", updatedList)
+      setSelectedId(updatedList);
+      const updatedCount = currentCount + 1;
+      await updateHabit(id, updatedCount);
+      // console.log("addition updated count", updatedCount)
+    } else {
+      const newList = selectedId;
+      newList.splice(newList.indexOf(id), 1);
+      // console.log("new List", newList)
+      setSelectedId(newList);
+      const updatedCount = currentCount - 1;
+      await updateHabit(id, updatedCount);
+      // console.log("subtraction updated count", updatedCount)
+    }
+  };
 
   const updateSelectedDay = (value) => {
-    console.log("enter here: ", value);
+    // console.log("enter here: ", value);
     setSelectedDay(value);
   };
 
@@ -106,7 +157,9 @@ const Dashboard = () => {
       try {
         const response = await axiosConn.get(url);
         const username = response.data.data.username; //Did not use getUser since it returns a promise on console log
+        const avatarUrl = response.data.data.avatarUrl;
         setUsername(username);
+        setAvatarUrl(avatarUrl);
       } catch (error) {
         console.log(error.response);
       }
@@ -115,44 +168,134 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
+    // console.log("this runs");
+    setIsLoading(true);
     const url = "/api/v1/habits";
     const fetchData = async () => {
       try {
         const response = await axiosConn.get(url);
         const habits = response.data.data;
         const day = dayToWeekdayMapping[selectedDay];
-        console.log(day);
+        // console.log(day);
         const arrayOfHabits = [];
         habits.forEach((x) => {
-          let frequency = x.frequency[0];
-          let arrayOfObjects = Object.entries(frequency);
-
-          arrayOfObjects.forEach((y) => {
-            let habitObj = {};
-            if (y[0] === day) {
-              if (y[1] === true) {
-                (habitObj.name = x.name), (habitObj.id = x._id);
-                arrayOfHabits.push(habitObj);
+          let todayDate = new Date();
+          let endDate = new Date(x.endDate)
+          // console.log("today's date", todayDate);
+          // console.log("end date", endDate);
+          if (todayDate < endDate){
+            let frequency = x.frequency[0];
+            let arrayOfObjects = Object.entries(frequency);
+            // console.log("array of objects are", arrayOfObjects);
+            arrayOfObjects.forEach((y) => {
+              let habitObj = {};
+              if (y[0] === day) {
+                if (y[1] === true) {
+                  // console.log(
+                  //   "current count retrieved from db is ",
+                  //   x.currentCount
+                  // );
+                  (habitObj.name = x.name),
+                    ((habitObj.id = x._id),
+                    (habitObj.currentCount = x.currentCount),
+                    (habitObj.targetCount = x.targetCount));
+                  arrayOfHabits.push(habitObj);
+                }
               }
-            }
-          });
+            });
+          }
+          // let frequency = x.frequency[0];
+          // let arrayOfObjects = Object.entries(frequency);
+          // // console.log("array of objects are", arrayOfObjects);
+          // arrayOfObjects.forEach((y) => {
+          //   let habitObj = {};
+          //   if (y[0] === day) {
+          //     if (y[1] === true) {
+          //       // console.log(
+          //       //   "current count retrieved from db is ",
+          //       //   x.currentCount
+          //       // );
+          //       (habitObj.name = x.name),
+          //         ((habitObj.id = x._id),
+          //         (habitObj.currentCount = x.currentCount),
+          //         (habitObj.targetCount = x.targetCount));
+          //       arrayOfHabits.push(habitObj);
+          //     }
+          //   }
+          // });
         });
         setHabits(arrayOfHabits);
+        setIsLoading(false);
       } catch (error) {
         console.log(error);
       }
     };
     fetchData();
-  }, [selectedDay]);
+  }, [selectedDay, counter]);
 
-  console.log("day:", selectedDay);
-  console.log(habits);
+  // console.log("day:", selectedDay);
+  // console.log(habits);
+
+  const renderItem = ({ item }) => {
+    let backgroundColor;
+    let tickColor;
+    // console.log("index", selectedId.indexOf(item.id));
+    if (selectedId.indexOf(item.id) == -1 || selectedDay!=dayNumbers[0]) {
+      backgroundColor = "#E8E8F7";
+      tickColor = "#FFFFFF";
+    } else {
+      backgroundColor = "#E9E9E9";
+      tickColor = "#27D24C";
+    }
+
+    return (
+      <TouchableOpacity
+        disabled={selectedDay==dayNumbers[0] ? false : true}
+        style={[styles.habitsContainer, { backgroundColor: backgroundColor }]}
+        key={item.id}
+        onPress={() => {
+          onPress(item.id, item.currentCount);
+        }}
+      >
+        <View style={styles.percent}>
+          <CircularProgress
+            // percent={20}
+            percent={Math.round((item.currentCount / item.targetCount) * 100)}
+            radius={25}
+            textFontSize={12}
+            textFontColor={"white"}
+            textFontWeight={"normal"}
+            overallbg="#FF9F6A"
+            ringColor="white"
+            ringBgColor="#ffc5a6"
+            bgRingWidth={4}
+            progressRingWidth={4}
+          />
+        </View>
+        <Text style={styles.username}> {item.name} </Text>
+        <View style={styles.tick}>
+          <MaterialIcon
+            name="checkbox-marked-circle"
+            size={30}
+            color={tickColor}
+          ></MaterialIcon>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View style={{ backgroundColor: "white" }}>
       <View style={[styles.margin]}>
         <View style={styles.container}>
-          <Avatar.Image size={64} source={iconImage}></Avatar.Image>
+          {/* <Avatar.Image size={64} source={{ uri: avatarUrl }}></Avatar.Image> */}
+
+          {avatarUrl ? (
+            <Avatar.Image size={64} source={{ uri: avatarUrl }} />
+          ) : (
+            <Avatar.Icon style={styles.profilepic} size={64} icon="account" />
+          )}
+
           <View style={styles.container2}>
             <Text style={styles.welcome}> WELCOME!</Text>
             <Text style={styles.username}> {userName} </Text>
@@ -378,20 +521,46 @@ const Dashboard = () => {
         </View>
         <Text style={styles.personalHabits}>Personal Habits </Text>
         <View style={styles.scrollableContainer}>
-          <ScrollView>
-            {habits.map((x) => {
+          {/* <ScrollView> */}
+          <View style={styles.flatListStuff}>
+            <FlatList
+              data={habits}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id}
+              extraData={[refresh]}
+            ></FlatList>
+            {/* <View style={styles.emptyBox}/> */}
+          </View>
+          <View style={styles.emptyBox} />
+          {/* {habits.map((x) => {
               return (
-                <TouchableOpacity style={styles.habitsContainer} key={x.id}>
-                  <View style={styles.habitIcon}>
-                    <Icon name="photo" size={30} color="white"></Icon>
+                <TouchableOpacity style={[styles.habitsContainer,{backgroundColor: isPressed == false ? "#E8E8F7": "#E9E9E9"}]} key={x.id} onPress={onPress}>
+                  <View style={styles.percent}>
+                    <CircularProgress
+                      // percent={20}
+                      percent={x.currentCount / x.targetCount * 100}
+                      radius={25}
+                      textFontSize={12}
+                      textFontColor={'white'}
+                      textFontWeight={"normal"}
+                      overallbg="#FF9F6A"
+                      ringColor="white"
+                      ringBgColor="#ffc5a6"
+                      bgRingWidth={4}
+                      progressRingWidth={4}
+                    />
                   </View>
                   <Text style={styles.username}> {x.name} </Text>
+                  <View style={styles.tick}>
+                    <MaterialIcon name="checkbox-marked-circle" size={30} color="#FFFFFF"></MaterialIcon>
+                  </View>
                 </TouchableOpacity>
               );
-            })}
-          </ScrollView>
+            })} */}
+          {/* </ScrollView> */}
         </View>
       </View>
+      {isLoading ? <AnimatedLoader text="Loading..." /> : null}
     </View>
   );
 };
@@ -408,11 +577,29 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  flatListStuff: {
+    maxHeight: windowHeight / 1.8,
+    flex: 1,
+    marginTop: StatusBar.currentHeight || 0,
+    // marginTop: "5%",
+    marginBottom: "1%",
+  },
+  percent: {
+    // flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    // paddingRight: 10,
+    // paddingHorizontal: 10,
+    paddingLeft: "6%",
+    paddingRight: "2%",
+  },
+  tick: {
+    marginRight: 20,
+  },
   habitsContainer: {
     height: 100,
     width: "100%",
-    backgroundColor: "#E8E8F7",
-    borderRadius: "30%",
+    borderRadius: 30,
     marginTop: 13,
     flexDirection: "row",
     flex: 1,
@@ -420,7 +607,7 @@ const styles = StyleSheet.create({
   },
   scrollableContainer: {
     height: "71%",
-    paddingTop: 15,
+    paddingTop: Platform.OS === "ios" ? "5%" : 0,
   },
   generalFontTitle: {
     color: "#4E53BA",
@@ -444,7 +631,7 @@ const styles = StyleSheet.create({
     height: "90%",
     backgroundColor: "white",
     alignSelf: "center",
-    borderRadius: "20%",
+    borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
     borderColor: "#4E53BA",
@@ -496,7 +683,7 @@ const styles = StyleSheet.create({
     color: "#110580",
     flex: 1,
     flexWrap: "wrap",
-    marginRight: 10
+    marginRight: 10,
   },
   exitContainer: {
     flex: 1,
@@ -513,5 +700,10 @@ const styles = StyleSheet.create({
     marginLeft: "8%",
     marginRight: "8%",
     marginBottom: "15%",
+  },
+  emptyBox: {
+    width: "100%",
+    height: Platform.OS === "ios" ? 0 : "13%",
+    backgroundColor: "white",
   },
 });

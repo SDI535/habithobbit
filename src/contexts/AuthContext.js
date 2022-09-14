@@ -31,6 +31,7 @@ export const AuthProvider = ({ children }) => {
           "https://habithobbit-server.onrender.com/api/v1/users/login",
           loginCredentials
         );
+        console.log(response);
         let userData = response.data.data;
         let token = response.data.token;
         saveUser(JSON.stringify(userData));

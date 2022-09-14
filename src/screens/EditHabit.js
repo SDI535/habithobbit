@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { React, useState, useEffect } from "react";
 import {
   Alert,
   Text,
@@ -18,9 +18,10 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { habitValidator } from "../helpers/habitValidator";
 import { Switch } from "react-native-paper";
 import moment from "moment";
-import EditHabit from "./EditHabit";
+import AnimatedLoader from "../components/AnimatedLoader";
 
-const CreateHabit = ({ navigation }) => {
+const EditHabit = ({ route, navigation }) => {
+  let { masterHabit } = route.params;
   const [habitData, setHabitData] = useState({
     name: "",
     description: "",
@@ -39,16 +40,36 @@ const CreateHabit = ({ navigation }) => {
     currentCount: 0,
     private: false,
   });
-  const [habit, setHabit] = useState(null);
-  const [habitDesc, setHabitDesc] = useState(null);
+
+  // const [originalData, setOriginalData] = useState({
+  //   name: "",
+  //   description: "",
+  //   frequency: {
+  //     repeat: "daily",
+  //     mon: true,
+  //     tues: true,
+  //     wed: true,
+  //     thurs: true,
+  //     fri: true,
+  //     sat: true,
+  //     sun: true,
+  //   },
+  //   endDate: "",
+  //   targetCount: 0,
+  //   currentCount: 0,
+  //   private: false,
+  // });
+
+  const [habit, setHabit] = useState(masterHabit.name);
+  const [habitDesc, setHabitDesc] = useState(masterHabit.description);
   const [openFreq, setOpenFreq] = useState(false);
-  const [freqValue, setFreqValue] = useState("weekly");
+  const [freqValue, setFreqValue] = useState(masterHabit.frequency[0].repeat);
   const [freq, setFreq] = useState([
     { label: "Daily", value: "daily" },
     { label: "Weekly", value: "weekly" },
   ]);
   const [openDay, setOpenDay] = useState(false);
-  const [dayValue, setDayValue] = useState([moment().isoWeekday()]);
+  const [dayValue, setDayValue] = useState([]);
   const [day, setDay] = useState([
     { label: "Monday", value: 1 },
     { label: "Tuesday", value: 2 },
@@ -58,13 +79,97 @@ const CreateHabit = ({ navigation }) => {
     { label: "Saturday", value: 6 },
     { label: "Sunday", value: 7 },
   ]);
-
-  //Datetime picker
-  const [endDate, setEndDate] = useState(moment().toDate());
+  const [endDate, setEndDate] = useState(masterHabit.endDate);
   const prettyDate = moment(endDate).format("DD MMMM YYYY");
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
+  const onTogglePrivacy = () => setIsPrivacyOn(!isPrivacyOn);
+  const [isPrivacyOn, setIsPrivacyOn] = useState(masterHabit.private);
+  const createdAt = masterHabit.createdAt;
+  const [unchanged, setunchanged] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isUpdated, setIsUpdated] = useState(false);
+  const [masterHabitl, setMasterHabitl] = useState(masterHabit);
 
+  // console.log(masterHabit);
+  // console.log("End date:", endDate);
+
+  useEffect(() => {
+    let arrayList = [];
+    if (masterHabit.frequency[0].repeat == "daily") {
+      arrayList = [1, 2, 3, 4, 5, 6, 7];
+    } else if (masterHabit.frequency[0].repeat == "weekly") {
+      if (masterHabit.frequency[0].mon == true) {
+        arrayList.push(1);
+      }
+      if (masterHabit.frequency[0].tues == true) {
+        arrayList.push(2);
+      }
+      if (masterHabit.frequency[0].wed == true) {
+        arrayList.push(3);
+      }
+      if (masterHabit.frequency[0].thurs == true) {
+        arrayList.push(4);
+      }
+      if (masterHabit.frequency[0].fri == true) {
+        arrayList.push(5);
+      }
+      if (masterHabit.frequency[0].sat == true) {
+        arrayList.push(6);
+      }
+      if (masterHabit.frequency[0].sun == true) {
+        arrayList.push(7);
+      }
+    }
+    setDayValue(arrayList);
+  }, []);
+
+  useEffect(() => {
+    const prepare = () => {
+      setHabitData((prevHabit) => ({
+        ...prevHabit,
+        name: habit,
+        description: habitDesc,
+        frequency: {
+          repeat: freqValue,
+          mon: dayValue.includes(1),
+          tues: dayValue.includes(2),
+          wed: dayValue.includes(3),
+          thurs: dayValue.includes(4),
+          fri: dayValue.includes(5),
+          sat: dayValue.includes(6),
+          sun: dayValue.includes(7),
+        },
+        endDate: endDate,
+        currentCount: masterHabit.currentCount,
+        targetCount: calculateTargetCount(),
+        private: isPrivacyOn,
+      }));
+    };
+    prepare();
+  }, [habit, habitDesc, freqValue, dayValue, endDate, isPrivacyOn]);
+
+  const saveEditHabit = async () => {
+    try {
+      setIsLoading(true);
+      const url = `/api/v1/habits/${masterHabit._id}`;
+      const response = await axiosConn.put(url, habitData);
+      if (response) {
+        Alert.alert("SUCCESS", "Habit is updated!", [{ text: "Ok" }]);
+      }
+      masterHabit = response.data.data;
+      setMasterHabitl(response.data.data);
+      setIsLoading(false);
+      setIsUpdated(true);
+      //setunchanged(true);
+    } catch (error) {
+      //Alert.alert("Plese enter a habit");
+      //habitInputError();
+      console.log(error.response.data);
+    }
+  };
+
+  //Datetime picker
   const changeDate = (event, selectedDate) => {
     const currentDate = selectedDate || endDate;
     if (Platform.OS === "android") {
@@ -79,8 +184,7 @@ const CreateHabit = ({ navigation }) => {
 
   const calculateTargetCount = () => {
     let totalCount = 0;
-
-    let start = moment();
+    let start = moment(createdAt);
     let end = moment(endDate);
 
     // if freq = daily, totalCount = daysInterval (minus day it was created)
@@ -103,15 +207,10 @@ const CreateHabit = ({ navigation }) => {
           count++;
         }
       }
-
       totalCount = (Math.round(diffinWeeks) + 1) * countPerWeek - count;
     }
     return totalCount;
   };
-
-  //Privacy setting
-  const [isPrivacyOn, setIsPrivacyOn] = useState(false);
-  const onTogglePrivacy = () => setIsPrivacyOn(!isPrivacyOn);
 
   // //Habit input validator
   // const [habitCreate, setHabitCreate] = useState({habit: ""});
@@ -130,30 +229,6 @@ const CreateHabit = ({ navigation }) => {
   //   }
   // }
 
-  useEffect(() => {
-    const prepare = () => {
-      setHabitData((prevHabit) => ({
-        ...prevHabit,
-        name: habit,
-        description: habitDesc,
-        frequency: {
-          repeat: freqValue,
-          mon: dayValue.includes(1),
-          tues: dayValue.includes(2),
-          wed: dayValue.includes(3),
-          thurs: dayValue.includes(4),
-          fri: dayValue.includes(5),
-          sat: dayValue.includes(6),
-          sun: dayValue.includes(7),
-        },
-        endDate: endDate,
-        targetCount: calculateTargetCount(),
-        private: isPrivacyOn,
-      }));
-    };
-    prepare();
-  }, [habit, habitDesc, freqValue, dayValue, endDate, isPrivacyOn]);
-
   const clearForm = () => {
     setHabit("");
     setHabitDesc("");
@@ -161,23 +236,6 @@ const CreateHabit = ({ navigation }) => {
     setDayValue([moment().isoWeekday()]);
     setEndDate(moment().toDate());
     setIsPrivacyOn(false);
-  };
-
-  const createHabit = async () => {
-    console.log(habitData);
-    try {
-      const url = "/api/v1/habits";
-      const response = await axiosConn.post(url, habitData);
-      if (response) {
-        Alert.alert("SUCCESS", "Habit created!", [
-          { text: "Ok", onPress: () => clearForm() },
-        ]);
-      }
-    } catch (error) {
-      Alert.alert("Plese enter a habit");
-      //habitInputError();
-      console.log(error.response.data);
-    }
   };
 
   const selectAllDays = (value) => {
@@ -196,11 +254,11 @@ const CreateHabit = ({ navigation }) => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ScrollView>
         <View style={styles.habitcontainer}>
-          <BackButton goBack={() => navigation.goBack()} />
-          <Text style={styles.topHeader}>Create Habit</Text>
+          <BackButton goBack={navigation.goBack} />
+          <Text style={styles.topHeader}>Edit Habit</Text>
           <Text style={styles.headerTxt}>Habit</Text>
           <TextInput
-            placeholder="Enter a Habit"
+            placeholder={habit}
             value={habit}
             returnKeyType="next"
             onChangeText={(value) => {
@@ -214,7 +272,7 @@ const CreateHabit = ({ navigation }) => {
 
           <Text style={styles.headerTxt}>Habit Description</Text>
           <TextInput
-            placeholder="Enter a description"
+            placeholder="No Description"
             onChangeText={(value) => {
               setHabitDesc(value);
             }}
@@ -277,7 +335,7 @@ const CreateHabit = ({ navigation }) => {
           {show && (
             <DateTimePicker
               style={{ width: "100%" }}
-              value={endDate}
+              value={moment(endDate).toDate()}
               mode={mode}
               is24Hour={true}
               onChange={changeDate}
@@ -291,9 +349,7 @@ const CreateHabit = ({ navigation }) => {
               Private
             </Text>
             <Switch
-              style={{
-                color: "black",
-              }}
+              style={{ color: "black" }}
               value={isPrivacyOn}
               onValueChange={onTogglePrivacy}
               trackColor={{ true: "#4E53BA" }}
@@ -306,21 +362,21 @@ const CreateHabit = ({ navigation }) => {
           <Button
             style={styles.button}
             onPress={() => {
-              // if (habit === "") {
-              //   habitInputError();
-              // } else {
-              //   createHabit();
-              // }
-              createHabit();
-              // habitInputError();
+              saveEditHabit();
+              // navigation.navigate({
+              //   name: 'ViewHabit',
+              //   params: { isUpdated : masterHabitl },
+              //   merge: true,
+              // });
             }}
           >
-            Create
+            Save
           </Button>
         </View>
+        {isLoading ? <AnimatedLoader text="Loading..." /> : null}
       </ScrollView>
     </TouchableWithoutFeedback>
   );
 };
 
-export default CreateHabit;
+export default EditHabit;
