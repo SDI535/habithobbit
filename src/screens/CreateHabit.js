@@ -88,7 +88,7 @@ const CreateHabit = ({ navigation }) => {
     // totalCount = weeks (including this week) x count of days - (1st occurrance of days that is before startday) - (last occurance of days that is after end date)
     if (freqValue === "daily") {
       let daysInterval = end.diff(start, "days", true);
-      totalCount = Math.round(daysInterval);
+      totalCount = Math.round(daysInterval) + 1;
     } else {
       let diffinWeeks = end.diff(start, "weeks", true);
       // get count of selected days per week
@@ -99,7 +99,7 @@ const CreateHabit = ({ navigation }) => {
 
       let count = 0;
       for (let i = 0; i < dayValue.length; i++) {
-        if (dayValue[i] <= startDay || dayValue[i] > endDay) {
+        if (dayValue[i] < startDay || dayValue[i] > endDay) {
           count++;
         }
       }
@@ -196,7 +196,7 @@ const CreateHabit = ({ navigation }) => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ScrollView>
         <View style={styles.habitcontainer}>
-          <BackButton goBack={navigation.goBack} />
+          <BackButton goBack={() => navigation.goBack()} />
           <Text style={styles.topHeader}>Create Habit</Text>
           <Text style={styles.headerTxt}>Habit</Text>
           <TextInput
@@ -287,7 +287,7 @@ const CreateHabit = ({ navigation }) => {
 
           <Text style={styles.headerTxt}>Habit Privacy</Text>
           <View style={styles.privacyContainer}>
-            <Text style={{ color: "#4E53BA", fontWeight: "bold"}}>
+            <Text style={{ color: "#4E53BA", fontWeight: "bold" }}>
               Private
             </Text>
             <Switch

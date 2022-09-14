@@ -18,7 +18,7 @@ import Button from "../components/loginButton";
 import { EditHabit } from "./EditHabit";
 
 const ViewHabit = ({ route, navigation }) => {
-//   const { isUpdated } = route.params;
+  //   const { isUpdated } = route.params;
   //console.log("view habit", isUpdated);
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
@@ -34,7 +34,7 @@ const ViewHabit = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const [masterHabit, setMasterHabit] = useState({});
-//   const [updated, setUpdated] = useState(0);
+  //   const [updated, setUpdated] = useState(0);
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -133,6 +133,7 @@ const ViewHabit = ({ route, navigation }) => {
                 selectedColor: "#E8E8F7",
               };
             });
+            console.log("list of dates", listOfDates);
             setDates(newDaysObject);
           }
         } catch (error) {
@@ -143,12 +144,12 @@ const ViewHabit = ({ route, navigation }) => {
     }, [])
   );
 
-//   useEffect(() => {
-//     if (route.params.isUpdated) {
-//       //setUpdated((prev) => {prev + 1})
-//       setHabitName(isUpdated.name);
-//     }
-//   }, [route.params.isUpdated]);
+  //   useEffect(() => {
+  //     if (route.params.isUpdated) {
+  //       //setUpdated((prev) => {prev + 1})
+  //       setHabitName(isUpdated.name);
+  //     }
+  //   }, [route.params.isUpdated]);
 
   const datesCalculation = (weekday, current, end) => {
     let calculatedDates = [];
@@ -182,87 +183,87 @@ const ViewHabit = ({ route, navigation }) => {
     }
   };
 
-    return (
-        <Provider>
-        <View style={styles.habitcontainer}>
-            <BackButton goBack={navigation.goBack} />
-            <TouchableOpacity style={styles.trashcan} onPress={showModal}>
-                <FontAwesome
-                    name="trash-o"
-                    size={18}
-                    style={{color: "#878585"}}
-                >
-                </FontAwesome>
-            </TouchableOpacity>
-            <View style={styles.viewHabit}>
-                <Text style={styles.topHeader}>{habitName}</Text>
-                <TouchableOpacity style={{ marginLeft: "1%", marginTop: "1%" }} onPress={()=>navigation.navigate("EditHabit", { masterHabit: masterHabit })}>
-                    <AntDesign
-                        name="edit"
-                        size={20}
-                        style={{ marginLeft: "2%", color: "#110580" }}>
-                    </AntDesign>
-                </TouchableOpacity>
-            </View>
-            <Calendar
-                style={{
-                    width: 330,
-                    marginLeft: "5%",
-                    marginRight: "5%",
-                    borderColor: "#878585",
-                    borderWidth: 0.4,
-                    borderRadius: 20,
-                    minHeight: 320,
-                    paddingVertical: 10,
-                    marginTop: (Platform.OS === 'ios') ? "5%" : "2%"
-
-                }}
-                markedDates={
-                    dates
-                }
-                // Specify theme properties to override specific styles for calendar parts. Default = {}
-                theme={{
-                    selectedDayTextColor: '#110580',
-                    todayTextColor: '#110580',
-                    arrowColor: '#110580',
-                    monthTextColor: '#110580',
-                    textMonthFontWeight: 'bold',
-                }}
-            />
-            <Text style={[styles.viewHabitTitle, { marginTop: "5%" }]}>Habit Description</Text>
-            <Text style={styles.viewHabitDescription}> {habitDesc} </Text>
-            <Text style={styles.viewHabitTitle}>Frequency</Text>
-            <Text style={styles.viewHabitDescription}> {freq} </Text>
-            <Text style={styles.viewHabitTitle}>End Date</Text>
-            <Text style={styles.viewHabitDescription}> {endDate} </Text>
-            <Text style={styles.viewHabitTitle}>Habit Privacy</Text>
-            <Text style={styles.viewHabitDescription}> {privacy} </Text>
-            {isLoading ? <AnimatedLoader text="Loading..." /> : null}
-            <Portal>
-                <Modal
-                    visible={visible}
-                    onDismiss={hideModal}
-                    contentContainerStyle={containerStyle}
-                >
-                    <Image source={require("../assets/cry.png")} />
-                    <Text style={styles.popheader}>W...Wait!</Text>
-                    <Text style={styles.popTxt}>
-                        Are you sure you want to delete this habit?
-                    </Text>
-                    <View style={{ flexDirection: "row" }}>
-                        <Button style={styles.buttonNot} onPress={hideModal}>
-                            Nahh
-                        </Button>
-                        <Button
-                            style={styles.buttonYes}
-                            onPress={() => deleteHabit()}
-                        >
-                            Sure!
-                        </Button>
-                    </View>
-                </Modal>
-            </Portal>
+  return (
+    <Provider>
+      <View style={styles.habitcontainer}>
+        <BackButton goBack={navigation.goBack} />
+        <TouchableOpacity style={styles.trashcan} onPress={showModal}>
+          <FontAwesome
+            name="trash-o"
+            size={18}
+            style={{ color: "#878585" }}
+          ></FontAwesome>
+        </TouchableOpacity>
+        <View style={styles.viewHabit}>
+          <Text style={styles.topHeader}>{habitName}</Text>
+          <TouchableOpacity
+            style={{ marginLeft: "1%", marginTop: "1%" }}
+            onPress={() =>
+              navigation.navigate("EditHabit", { masterHabit: masterHabit })
+            }
+          >
+            <AntDesign
+              name="edit"
+              size={20}
+              style={{ marginLeft: "2%", color: "#110580" }}
+            ></AntDesign>
+          </TouchableOpacity>
         </View>
+        <Calendar
+          style={{
+            width: 330,
+            marginLeft: "5%",
+            marginRight: "5%",
+            borderColor: "#878585",
+            borderWidth: 0.4,
+            borderRadius: 20,
+            minHeight: 320,
+            paddingVertical: 10,
+            marginTop: Platform.OS === "ios" ? "5%" : "2%",
+          }}
+          markedDates={dates}
+          // Specify theme properties to override specific styles for calendar parts. Default = {}
+          theme={{
+            selectedDayTextColor: "#110580",
+            todayTextColor: "#110580",
+            arrowColor: "#110580",
+            monthTextColor: "#110580",
+            textMonthFontWeight: "bold",
+          }}
+        />
+        <Text style={[styles.viewHabitTitle, { marginTop: "5%" }]}>
+          Habit Description
+        </Text>
+        <Text style={styles.viewHabitDescription}> {habitDesc} </Text>
+        <Text style={styles.viewHabitTitle}>Frequency</Text>
+        <Text style={styles.viewHabitDescription}> {freq} </Text>
+        <Text style={styles.viewHabitTitle}>End Date</Text>
+        <Text style={styles.viewHabitDescription}> {endDate} </Text>
+        <Text style={styles.viewHabitTitle}>Habit Privacy</Text>
+        <Text style={styles.viewHabitDescription}> {privacy} </Text>
+        {isLoading ? <AnimatedLoader text="Loading..." /> : null}
+        <Portal>
+          <Modal
+            visible={visible}
+            onDismiss={hideModal}
+            contentContainerStyle={containerStyle}
+          >
+            <Image source={require("../assets/cry.png")} />
+            <Text style={styles.popheader}>W...Wait!</Text>
+            <Text style={styles.popTxt}>
+              Are you sure you want to delete this habit?
+            </Text>
+            <View style={{ flexDirection: "row" }}>
+              <Button style={styles.buttonNot} onPress={hideModal}>
+                Nahh
+              </Button>
+              <Button style={styles.buttonYes} onPress={() => deleteHabit()}>
+                Sure!
+              </Button>
+            </View>
+          </Modal>
+        </Portal>
+      </View>
     </Provider>
   );
 };
